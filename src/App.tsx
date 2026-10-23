@@ -50,7 +50,7 @@ export default function App() {
           : Home;
 
   return (
-    <div className="grain flex min-h-screen flex-col bg-paper text-ink">
+    <div className="grain flex min-h-screen flex-col bg-ink text-fog">
       <Nav />
       <main className="flex-1 page-enter" key={pageKey}>
         <Page />

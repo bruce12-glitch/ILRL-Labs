@@ -11,6 +11,7 @@ export const SITE = {
   email: "inba.research.ilrl.labs@gmail.com",
   github: "https://github.com/bruce12-glitch",
   githubOrg: "https://github.com/bruce12-glitch",
+  url: "https://bruce12-glitch.github.io/ILRL-Labs/",
   founded: "Oct 2026",
 };
 
@@ -36,7 +37,6 @@ export interface Project {
   arxiv: string;
   arxivLabel: string;
   code: string;
-  diagram: "prefill" | "kv";
   paperId: string;
 }
 
@@ -66,7 +66,6 @@ export const PROJECTS: Project[] = [
     arxiv: "https://arxiv.org/abs/2512.03310",
     arxivLabel: "arXiv:2512.03310",
     code: "https://github.com/bruce12-glitch/Entro-Prefill",
-    diagram: "prefill",
     paperId: "entroprefill-paper",
   },
   {
@@ -94,7 +93,6 @@ export const PROJECTS: Project[] = [
     arxiv: "https://arxiv.org/abs/2603.01421",
     arxivLabel: "arXiv:2603.01421",
     code: "https://github.com/bruce12-glitch/PageEntro-KV",
-    diagram: "kv",
     paperId: "page-entrokv-paper",
   },
 ];
@@ -167,7 +165,7 @@ export interface Person {
   linkedin?: string;
   /** relative path under public/, e.g. "people/inba.jpg" */
   photo?: string;
-  tint: "navy" | "gold" | "cream";
+  tint: "lime" | "limedim" | "inkraise";
   /** alumni only */
   now?: string;
   years?: string;
@@ -191,7 +189,7 @@ export const PEOPLE: {
       scholar: "https://scholar.google.com/citations?user=SKq_-mgAAAAJ&hl=en",
       linkedin: "https://www.linkedin.com/in/vinoth-nandakumar-07456b149/",
       photo: "people/vinu.jpg",
-      tint: "gold",
+      tint: "limedim",
     },
   ],
   team: [
@@ -203,7 +201,7 @@ export const PEOPLE: {
       scholar: scholarSearch("Inbasekaran S"),
       linkedin: "https://www.linkedin.com/in/inbasekaran-s-106a90383",
       photo: "people/inba.jpg",
-      tint: "navy",
+      tint: "lime",
     },
   ],
   alumni: [],

@@ -8,9 +8,9 @@ import { cn } from "../utils/cn";
 const container = "mx-auto max-w-6xl px-5 sm:px-8";
 
 const tintBg: Record<Person["tint"], string> = {
-  navy: "bg-navywash text-navy",
-  gold: "bg-goldwash text-gold",
-  cream: "bg-cream text-inksoft",
+  lime: "bg-limewash text-lime",
+  limedim: "bg-limewash text-limedim",
+  inkraise: "bg-inkraise text-fogsoft",
 };
 
 export const initialsOf = (name: string) =>
@@ -27,12 +27,12 @@ function GroupHead({ index, title, count, note }: { index: string; title: string
     <Reveal className="mb-8">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <p className="eyebrow">{index}</p>
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-ink">
+        <h2 className="font-serif text-3xl font-medium tracking-tight text-fog">
           {title}
-          <span className="ml-3 font-mono text-sm font-normal text-inkmute">({count})</span>
+          <span className="ml-3 font-mono text-sm font-normal text-fogmute">({count})</span>
         </h2>
       </div>
-      <p className="mt-2 max-w-xl text-[0.93rem] text-inksoft">{note}</p>
+      <p className="mt-2 max-w-xl text-[0.93rem] text-fogsoft">{note}</p>
     </Reveal>
   );
 }
@@ -41,7 +41,7 @@ function PersonCard({ person, big }: { person: Person; big?: boolean }) {
   return (
     <article
       className={cn(
-        "group card-3d rounded-2xl border border-line bg-white shadow-card",
+        "group card-3d rounded-2xl border border-line bg-inkraise shadow-card",
         big ? "p-7" : "p-6"
       )}
     >
@@ -69,11 +69,11 @@ function PersonCard({ person, big }: { person: Person; big?: boolean }) {
         </span>
         )}
         <div className="min-w-0">
-          <h3 className={cn("font-serif leading-tight font-medium text-ink", big ? "text-[1.45rem]" : "text-[1.25rem]")}>
+          <h3 className={cn("font-serif leading-tight font-medium text-fog", big ? "text-[1.45rem]" : "text-[1.25rem]")}>
             {person.name}
           </h3>
-          <p className="mt-1.5 font-mono text-[10px] tracking-[0.16em] text-gold uppercase">{person.role}</p>
-          <p className="mt-2 text-[0.88rem] leading-relaxed text-inksoft">{person.focus}</p>
+          <p className="mt-1.5 font-mono text-[10px] tracking-[0.16em] text-limedim uppercase">{person.role}</p>
+          <p className="mt-2 text-[0.88rem] leading-relaxed text-fogsoft">{person.focus}</p>
         </div>
       </div>
       <div className="mt-5 flex items-center gap-2.5 border-t border-line pt-4">
@@ -83,7 +83,7 @@ function PersonCard({ person, big }: { person: Person; big?: boolean }) {
           target="_blank"
           rel="noreferrer"
           aria-label={`${person.name} on GitHub`}
-          className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-inksoft transition-colors duration-200 hover:border-linedeep hover:text-ink"
+          className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-fogsoft transition-colors duration-200 hover:border-linedeep hover:text-fog"
         >
           <GithubIcon size={14} />
           GitHub
@@ -95,7 +95,7 @@ function PersonCard({ person, big }: { person: Person; big?: boolean }) {
           target="_blank"
           rel="noreferrer"
           aria-label={`${person.name} on Google Scholar`}
-          className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-inksoft transition-colors duration-200 hover:border-linedeep hover:text-ink"
+          className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-fogsoft transition-colors duration-200 hover:border-linedeep hover:text-fog"
         >
           <GraduationCap size={15} />
           Scholar
@@ -107,7 +107,7 @@ function PersonCard({ person, big }: { person: Person; big?: boolean }) {
             target="_blank"
             rel="noreferrer"
             aria-label={`${person.name} on LinkedIn`}
-            className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-inksoft transition-colors duration-200 hover:border-linedeep hover:text-ink"
+            className="inline-flex items-center gap-2 rounded-full border border-transparent px-2.5 py-1.5 font-mono text-[11px] text-fogsoft transition-colors duration-200 hover:border-linedeep hover:text-fog"
           >
             <LinkedinIcon size={14} />
             LinkedIn
@@ -125,10 +125,10 @@ export default function People() {
         <div className={`${container} pt-14 pb-12 sm:pt-20 sm:pb-14`}>
           <Reveal>
             <p className="eyebrow">People</p>
-            <h1 className="mt-4 font-serif text-4xl font-medium tracking-tight text-ink sm:text-6xl">
+            <h1 className="mt-4 font-serif text-4xl font-medium tracking-tight text-fog sm:text-6xl">
               The researchers in the loop
             </h1>
-            <p className="mt-6 max-w-2xl text-[1.05rem] leading-relaxed text-inksoft">
+            <p className="mt-6 max-w-2xl text-[1.05rem] leading-relaxed text-fogsoft">
               A remote-first group of mentors and students. Every name links out to GitHub and
               Google Scholar, because a lab is really a small graph of people with shared
               hardware access and stronger opinions.
@@ -178,15 +178,15 @@ export default function People() {
               <Link
                 to=""
                 anchor="join"
-                className="group flex h-full min-h-56 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-linedeep bg-cream/40 p-6 text-center transition-colors duration-300 hover:border-gold hover:bg-goldwash/40"
+                className="group flex h-full min-h-56 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-linedeep bg-inkraise/40 p-6 text-center transition-colors duration-300 hover:border-limedim hover:bg-limewash/40"
               >
-                <span className="flex h-13 w-13 items-center justify-center rounded-full border border-dashed border-linedeep font-serif text-xl text-inkmute transition-colors group-hover:border-gold group-hover:text-gold">
+                <span className="flex h-13 w-13 items-center justify-center rounded-full border border-dashed border-linedeep font-serif text-xl text-fogmute transition-colors group-hover:border-limedim group-hover:text-limedim">
                   +
                 </span>
-                <span className="font-serif text-lg text-inksoft italic transition-colors group-hover:text-ink">
+                <span className="font-serif text-lg text-fogsoft italic transition-colors group-hover:text-fog">
                   This seat is open
                 </span>
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider text-inkmute uppercase">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider text-fogmute uppercase">
                   Join the lab <ArrowUpRight size={12} />
                 </span>
               </Link>
@@ -206,7 +206,7 @@ export default function People() {
             note="Former members, still trapped somewhere in the recurrence."
           />
           <Reveal>
-            <div className="overflow-hidden rounded-2xl border border-line bg-white">
+            <div className="overflow-hidden rounded-2xl border border-line bg-inkraise">
               {PEOPLE.alumni.map((p, i) => (
                 <article
                   key={p.name}
@@ -216,13 +216,13 @@ export default function People() {
                   )}
                 >
                   <div className="sm:col-span-3">
-                    <h3 className="font-serif text-lg font-medium text-ink">{p.name}</h3>
+                    <h3 className="font-serif text-lg font-medium text-fog">{p.name}</h3>
                   </div>
-                  <p className="font-mono text-[11.5px] text-inkmute sm:col-span-4">
+                  <p className="font-mono text-[11.5px] text-fogmute sm:col-span-4">
                     {p.role} · {p.years}
                   </p>
-                  <p className="text-[0.9rem] text-inksoft sm:col-span-5">
-                    <span className="font-mono text-[10px] tracking-[0.16em] text-gold uppercase">Now · </span>
+                  <p className="text-[0.9rem] text-fogsoft sm:col-span-5">
+                    <span className="font-mono text-[10px] tracking-[0.16em] text-limedim uppercase">Now · </span>
                     {p.now}
                   </p>
                 </article>
@@ -237,17 +237,17 @@ export default function People() {
       <section>
         <div className={`${container} py-14 sm:py-16`}>
           <Reveal>
-            <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-line bg-cream/60 px-7 py-8 sm:px-10">
+            <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-line bg-inkraise/60 px-7 py-8 sm:px-10">
               <div className="max-w-xl">
-                <h2 className="font-serif text-2xl font-medium text-ink sm:text-3xl">Want a seat in the loop?</h2>
-                <p className="mt-2 text-[0.95rem] leading-relaxed text-inksoft">
+                <h2 className="font-serif text-2xl font-medium text-fog sm:text-3xl">Want a seat in the loop?</h2>
+                <p className="mt-2 text-[0.95rem] leading-relaxed text-fogsoft">
                   Email a short note with a link to something you built or measured. Kernels beat
                   résumés; reproducibility beats both.
                 </p>
               </div>
               <a
                 href={`mailto:${SITE.email}`}
-                className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-[0.92rem] font-medium text-paper transition-colors duration-300 hover:bg-navy"
+                className="group inline-flex items-center gap-2 rounded-full bg-lime px-6 py-3 text-[0.92rem] font-medium text-ink transition-colors duration-300 hover:bg-limedeep"
               >
                 <Mail size={15} />
                 {SITE.email}
