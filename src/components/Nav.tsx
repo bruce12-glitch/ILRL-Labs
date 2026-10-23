@@ -18,10 +18,10 @@ const LINKS: { to: Page; label: string }[] = [
  */
 export function LogoMark({ className, dark = false }: { className?: string; dark?: boolean }) {
   const uid = useId().replace(/:/g, "");
-  const navy = dark ? "#C8D4EA" : "#21386E";
-  const navyMid = dark ? "#A3B5D6" : "#4E679E";
-  const gold = dark ? "#E2C77A" : "#997A30";
-  const goldBright = dark ? "#F0DAA0" : "#C9A94D";
+  const lime = dark ? "#D6FF8A" : "#C6FF4A";
+  const limeMid = dark ? "#AEE85C" : "#9FD62E";
+  const limedim = dark ? "#A8CC5E" : "#8FB23F";
+  const limeBright = dark ? "#DCFF85" : "#E4FF9E";
 
   return (
     <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
@@ -31,17 +31,17 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
             dx="0"
             dy="1.5"
             stdDeviation="1.6"
-            floodColor={dark ? "#FCFBF7" : "#191712"}
-            floodOpacity={dark ? "0.06" : "0.18"}
+            floodColor="#000000"
+            floodOpacity={dark ? "0.35" : "0.5"}
           />
         </filter>
         <linearGradient id={`gn-${uid}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={navyMid} />
-          <stop offset="100%" stopColor={navy} />
+          <stop offset="0%" stopColor={limeMid} />
+          <stop offset="100%" stopColor={lime} />
         </linearGradient>
         <linearGradient id={`gg-${uid}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={goldBright} />
-          <stop offset="100%" stopColor={gold} />
+          <stop offset="0%" stopColor={limeBright} />
+          <stop offset="100%" stopColor={limedim} />
         </linearGradient>
       </defs>
       <g filter={`url(#lg-${uid})`}>
@@ -49,7 +49,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
         <path
           d="M20 15.5 C26 8, 36 10, 35 18 C34 26, 26 28, 20 24.5"
           fill="none"
-          stroke={navy}
+          stroke={lime}
           strokeWidth="3.6"
           strokeLinecap="round"
           opacity="0.4"
@@ -70,7 +70,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
           strokeWidth="3.6"
           strokeLinecap="round"
         />
-        {/* gold crossover diamond */}
+        {/* limedim crossover diamond */}
         <path
           d="M17.5 20 L20 16 L22.5 20 L20 24 Z"
           fill={`url(#gg-${uid})`}
@@ -79,7 +79,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
         <path
           d="M30 13 L32.5 15.5 L29.5 15"
           fill="none"
-          stroke={gold}
+          stroke={limedim}
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -113,8 +113,8 @@ export function Nav() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 hairline-b bg-paper/90 backdrop-blur-lg transition-shadow duration-300",
-        scrolled && !open && "shadow-[0_1px_0_rgba(25,23,18,0.02),0_10px_30px_-18px_rgba(25,23,18,0.22)]"
+        "sticky top-0 z-50 hairline-b bg-ink/90 backdrop-blur-lg transition-shadow duration-300",
+        scrolled && !open && "shadow-[0_1px_0_rgba(198,255,74,0.06),0_10px_30px_-18px_rgba(0,0,0,0.8)]"
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
@@ -122,10 +122,10 @@ export function Nav() {
         <Link to="" className="group flex items-center gap-3" ariaLabel="ILRL home">
           <LogoMark className="h-9 w-9 shrink-0 transition-transform duration-500 ease-out group-hover:scale-110" />
           <span className="flex flex-col leading-none">
-            <span className="font-serif text-[1.25rem] font-semibold tracking-tight text-ink">
+            <span className="font-serif text-[1.25rem] font-semibold tracking-tight text-fog">
               {SITE.short}
             </span>
-            <span className="mt-1 hidden font-mono text-[9.5px] tracking-[0.18em] text-inkmute uppercase sm:block">
+            <span className="mt-1 hidden font-mono text-[9.5px] tracking-[0.18em] text-fogmute uppercase sm:block">
               Inference-in-Loop &amp; Recurrence
             </span>
           </span>
@@ -141,13 +141,13 @@ export function Nav() {
                 to={l.to}
                 className={cn(
                   "relative px-3.5 py-2 text-[0.9rem] font-medium transition-colors duration-200",
-                  active ? "text-ink" : "text-inksoft hover:text-ink"
+                  active ? "text-fog" : "text-fogsoft hover:text-fog"
                 )}
               >
                 {l.label}
                 <span
                   className={cn(
-                    "absolute inset-x-3.5 -bottom-0.5 h-[1.5px] rounded-full bg-gold transition-transform duration-300 origin-left ease-out",
+                    "absolute inset-x-3.5 -bottom-0.5 h-[1.5px] rounded-full bg-limedim transition-transform duration-300 origin-left ease-out",
                     active ? "scale-x-100" : "scale-x-0"
                   )}
                 />
@@ -159,14 +159,14 @@ export function Nav() {
             target="_blank"
             rel="noreferrer"
             aria-label="ILRL on GitHub"
-            className="ml-2 rounded-full p-2 text-inksoft transition-colors hover:bg-cream hover:text-ink"
+            className="ml-2 rounded-full p-2 text-fogsoft transition-colors hover:bg-inkraise hover:text-fog"
           >
             <GithubIcon size={17} />
           </a>
           <Link
             to=""
             anchor="join"
-            className="group ml-2 inline-flex items-center gap-1.5 rounded-full bg-ink px-4.5 py-2 text-[0.85rem] font-medium text-paper transition-all duration-300 hover:bg-navy hover:shadow-lg"
+            className="group ml-2 inline-flex items-center gap-1.5 rounded-full bg-lime px-4.5 py-2 text-[0.85rem] font-medium text-ink transition-all duration-300 hover:bg-limedeep hover:shadow-lg"
           >
             Join the lab
             <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -175,7 +175,7 @@ export function Nav() {
 
         {/* mobile toggle */}
         <button
-          className="flex items-center gap-2 rounded-full border border-line px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-cream md:hidden"
+          className="flex items-center gap-2 rounded-full border border-line px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-inkraise md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
@@ -188,7 +188,7 @@ export function Nav() {
       {/* mobile panel */}
       <div
         className={cn(
-          "overflow-hidden border-line bg-paper transition-[max-height] duration-500 ease-[cubic-bezier(.22,1,.36,1)] md:hidden",
+          "overflow-hidden border-line bg-ink transition-[max-height] duration-500 ease-[cubic-bezier(.22,1,.36,1)] md:hidden",
           open ? "max-h-96 border-t" : "max-h-0"
         )}
       >
@@ -199,17 +199,17 @@ export function Nav() {
               to={l.to}
               className={cn(
                 "hairline-b flex items-center justify-between py-4 font-serif text-xl transition-colors duration-200",
-                route.page === l.to ? "text-ink" : "text-inksoft"
+                route.page === l.to ? "text-fog" : "text-fogsoft"
               )}
             >
               {l.label}
-              <ArrowUpRight size={16} className="text-inkmute" />
+              <ArrowUpRight size={16} className="text-fogmute" />
             </Link>
           ))}
           <Link
             to=""
             anchor="join"
-            className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper"
+            className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-medium text-ink"
           >
             Join the lab <ArrowUpRight size={14} />
           </Link>
