@@ -2,8 +2,8 @@
 
 Public website for the **Inference-in-Loop & Recurrence Lab (ILRL)**.
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-14b8a6?style=for-the-badge)](https://bruce12-glitch.github.io/ILRL-Frontend-/)
-[![CI](https://github.com/bruce12-glitch/ILRL-Frontend-/actions/workflows/ci.yml/badge.svg)](https://github.com/bruce12-glitch/ILRL-Frontend-/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-14b8a6?style=for-the-badge)](https://bruce12-glitch.github.io/ILRL-Labs/)
+[![CI](https://github.com/bruce12-glitch/ILRL-Labs/actions/workflows/ci.yml/badge.svg)](https://github.com/bruce12-glitch/ILRL-Labs/actions/workflows/ci.yml)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![Vite 7](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
@@ -73,10 +73,10 @@ src/
 
 ## 🔗 Links
 
-- **Frontend Repo:** https://github.com/bruce12-glitch/ILRL-Frontend-
+- **Frontend Repo:** https://github.com/bruce12-glitch/ILRL-Labs
 - **Backend Repo:** https://github.com/bruce12-glitch/ILRL-Backend
 - **Organization:** https://github.com/bruce12-glitch
-- **Live Site:** https://bruce12-glitch.github.io/ILRL-Frontend-/
+- **Live Site:** https://bruce12-glitch.github.io/ILRL-Labs/
 
 ---
 
