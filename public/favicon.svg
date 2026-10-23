@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="14" fill="#000000"/>
+  <rect width="64" height="64" rx="14" fill="#eff7ff"/>
   <defs>
     <filter id="s" x="-10%" y="-10%" width="130%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.55"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.12"/>
     </filter>
     <linearGradient id="gn" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#007FFF"/>
-      <stop offset="100%" stop-color="#0047AB"/>
+      <stop offset="0%" stop-color="#1859c9"/>
+      <stop offset="100%" stop-color="#087c83"/>
     </linearGradient>
     <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0047AB"/>
-      <stop offset="100%" stop-color="#002D62"/>
+      <stop offset="0%" stop-color="#087c83"/>
+      <stop offset="100%" stop-color="#1046a6"/>
     </linearGradient>
   </defs>
   <g filter="url(#s)">
     <!-- back arc of right loop -->
     <path d="M32 24 C42 12, 56 15, 55 28 C54 41, 42 44, 32 38"
-          fill="none" stroke="#0047AB" stroke-width="5.6" stroke-linecap="round" opacity="0.45"/>
+          fill="none" stroke="#087c83" stroke-width="5.6" stroke-linecap="round" opacity="0.45"/>
     <!-- left loop -->
     <path d="M32 38 C22 52, 8 48, 9 35 C10 22, 22 19, 32 24"
           fill="none" stroke="url(#gn)" stroke-width="5.6" stroke-linecap="round"/>
@@ -27,6 +27,6 @@
     <path d="M28 31 L32 24.5 L36 31 L32 37.5 Z" fill="url(#gg)"/>
     <!-- directional tick -->
     <path d="M48 20 L52 24 L47.5 23"
-          fill="none" stroke="#0047AB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          fill="none" stroke="#087c83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>

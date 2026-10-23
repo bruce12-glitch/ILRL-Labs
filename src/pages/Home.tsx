@@ -416,17 +416,17 @@ function JoinCta() {
               aria-hidden="true"
               className="absolute inset-0 opacity-[0.09]"
               style={{
-                backgroundImage: `radial-gradient(circle at 1px 1px, #000000 1px, transparent 0)`,
+                backgroundImage: `radial-gradient(circle at 1px 1px, var(--color-ink) 1px, transparent 0)`,
                 backgroundSize: "26px 26px",
                 maskImage: "linear-gradient(120deg, transparent 30%, black 100%)",
               }}
             />
             <div className="relative max-w-2xl">
-              <p className="font-mono text-[10px] tracking-[0.24em] text-ink/55 uppercase">06 / Join</p>
+              <p className="font-mono text-[10px] tracking-[0.24em] text-ink uppercase">06 / Join</p>
               <h2 className="mt-4 font-serif text-4xl leading-tight font-medium tracking-tight sm:text-5xl">
                 Join the loop.
               </h2>
-              <p className="mt-5 max-w-xl text-[1rem] leading-relaxed text-ink/70">
+              <p className="mt-5 max-w-xl text-[1rem] leading-relaxed text-ink">
                 We welcome motivated collaborators — from first-time open-source contributors to
                 PhD researchers — anywhere kernels, schedulers and memory systems meet language
                 models. Everything we build is open, so the fastest way in is a pull request or

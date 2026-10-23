@@ -1,28 +1,39 @@
 @import "tailwindcss";
 
-@theme {
+@theme static {
   --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Midnight / Sapphire / Cobalt / Azure */
-  --color-ink: #000000;
-  --color-inkraise: #002d62;
-  --color-fog: #f5faff;
-  --color-fogsoft: #b9d8ff;
-  --color-fogmute: #75a7de;
-  --color-line: #002d62;
-  --color-linedeep: #0047ab;
-  --color-lime: #007fff;
-  --color-limedeep: #0047ab;
-  --color-limedim: #87c2ff;
-  --color-limewash: #002d62;
+  /* Light blue surfaces / navy typography / cobalt actions / teal accents. */
+  --color-ink: #eff7ff;
+  --color-inkraise: #ffffff;
+  --color-fog: #142e4c;
+  --color-fogsoft: #365371;
+  --color-fogmute: #506983;
+  --color-line: #cedfee;
+  --color-linedeep: #8daecb;
+  --color-lime: #1859c9;
+  --color-limedeep: #1046a6;
+  --color-limedim: #087078;
+  --color-limewash: #e0efff;
 
-  --shadow-card: 0 1px 0 rgba(0, 127, 255, 0.08), 0 16px 40px -20px rgba(0, 0, 0, 0.82);
+  --color-diagram-top: #9acfff;
+  --color-diagram-front: #3d8fe5;
+  --color-diagram-side: #1859c9;
+  --color-diagram-midtop: #a7e3e4;
+  --color-diagram-midfront: #58b8c0;
+  --color-diagram-midside: #087078;
+  --color-diagram-lighttop: #e1f0ff;
+  --color-diagram-lightfront: #c3ddf4;
+  --color-diagram-lightside: #8daecb;
+  --color-selection: #c6e3ff;
+  --shadow-card: 0 1px 0 color-mix(in srgb, var(--color-lime) 8%, transparent), 0 16px 40px -20px color-mix(in srgb, var(--color-fog) 14%, transparent);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────── */
 html {
+  color-scheme: light;
   scroll-behavior: smooth;
   scroll-padding-top: 6.5rem;
 }
@@ -37,7 +48,7 @@ body {
 }
 
 ::selection {
-  background: rgba(0, 127, 255, 0.32);
+  background: var(--color-selection);
   color: var(--color-fog);
 }
 
@@ -62,14 +73,14 @@ body {
   border-radius: 2px;
 }
 
-/* Grain overlay — a restrained azure texture for the dark page */
+/* Grain overlay — a restrained azure texture for the light page */
 .grain::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 60;
-  opacity: 0.5;
+  opacity: 0.15;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.5 0 0 0 0 1 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -163,8 +174,8 @@ body {
 .card-3d:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 0 0 1px rgba(0, 127, 255, 0.28),
-    0 20px 48px -22px rgba(0, 0, 0, 0.85);
+    0 0 0 1px color-mix(in srgb, var(--color-lime) 20%, transparent),
+    0 20px 48px -22px color-mix(in srgb, var(--color-fog) 18%, transparent);
 }
 
 /* ── Smooth page transitions ──────────────────────────────────────────── */

@@ -18,10 +18,10 @@ const LINKS: { to: Page; label: string }[] = [
  */
 export function LogoMark({ className, dark = false }: { className?: string; dark?: boolean }) {
   const uid = useId().replace(/:/g, "");
-  const accent = dark ? "#9CD1FF" : "#007FFF";
-  const accentMid = dark ? "#5BB0FF" : "#0047AB";
-  const accentDim = dark ? "#75A7DE" : "#002D62";
-  const accentBright = dark ? "#D8ECFF" : "#87C2FF";
+  const accent = dark ? "var(--color-diagram-top)" : "var(--color-lime)";
+  const accentMid = dark ? "var(--color-diagram-front)" : "var(--color-limedeep)";
+  const accentDim = dark ? "var(--color-diagram-midside)" : "var(--color-limedim)";
+  const accentBright = dark ? "var(--color-diagram-lighttop)" : "var(--color-diagram-midtop)";
 
   return (
     <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
@@ -31,8 +31,8 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
             dx="0"
             dy="1.5"
             stdDeviation="1.6"
-            floodColor="#000000"
-            floodOpacity={dark ? "0.35" : "0.5"}
+            floodColor="var(--color-fog)"
+            floodOpacity="0.12"
           />
         </filter>
         <linearGradient id={`gn-${uid}`} x1="0" y1="0" x2="1" y2="1">
@@ -114,7 +114,7 @@ export function Nav() {
     <header
       className={cn(
         "sticky top-0 z-50 hairline-b bg-ink/90 backdrop-blur-lg transition-shadow duration-300",
-        scrolled && !open && "shadow-[0_1px_0_rgba(0,127,255,0.10),0_10px_30px_-18px_rgba(0,0,0,0.8)]"
+        scrolled && !open && "shadow-card"
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">

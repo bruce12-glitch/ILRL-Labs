@@ -1,15 +1,15 @@
 import type { CSSProperties } from "react";
 
 /* ────────────────────────────────────────────────────────────────────────
- * 3D isometric motif for ILRL — Midnight, Cobalt & Azure palette.
+ * 3D isometric motif for ILRL — light blue, cobalt and teal palette.
  * Clean depth — just enough to make the research feel tangible.
  * ──────────────────────────────────────────────────────────────────────── */
 
-const AZURE = "#007FFF";
-const SOFT = "#B9D8FF";
-const MUTE = "#75A7DE";
-const LINE = "#0047AB";
-const LINE_SOFT = "#002D62";
+const AZURE = "var(--color-lime)";
+const SOFT = "var(--color-fogsoft)";
+const MUTE = "var(--color-fogmute)";
+const LINE = "var(--color-linedeep)";
+const LINE_SOFT = "var(--color-line)";
 
 interface FaceSet {
   top: string;
@@ -17,9 +17,9 @@ interface FaceSet {
   side: string;
 }
 
-const DEEP: FaceSet = { top: "#B9D8FF", front: "#007FFF", side: "#0047AB" };
-const MID: FaceSet = { top: "#0047AB", front: "#002D62", side: "#001B3D" };
-const LIGHT: FaceSet = { top: "#002D62", front: "#001B3D", side: "#000E22" };
+const DEEP: FaceSet = { top: "var(--color-diagram-top)", front: "var(--color-diagram-front)", side: "var(--color-diagram-side)" };
+const MID: FaceSet = { top: "var(--color-diagram-midtop)", front: "var(--color-diagram-midfront)", side: "var(--color-diagram-midside)" };
+const LIGHT: FaceSet = { top: "var(--color-diagram-lighttop)", front: "var(--color-diagram-lightfront)", side: "var(--color-diagram-lightside)" };
 
 /* ── IsoBlock: the primitive 3D tile ──────────────────────────────────── */
 
@@ -84,7 +84,7 @@ function SharedDefs() {
   return (
     <defs>
       <filter id="iso-shadow" x="-25%" y="-15%" width="170%" height="185%">
-        <feDropShadow dx="0" dy="3" stdDeviation="3.5" floodColor="#000000" floodOpacity="0.45" />
+        <feDropShadow dx="0" dy="3" stdDeviation="3.5" floodColor="var(--color-fog)" floodOpacity="0.12" />
       </filter>
     </defs>
   );
