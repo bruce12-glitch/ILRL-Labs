@@ -25,8 +25,8 @@ export default function Research() {
               Systems for the inference loop.
             </h1>
             <p className="mt-6 max-w-2xl text-[1.05rem] leading-relaxed text-inksoft">
-              Three open frameworks that share one thesis: efficient LLM inference comes from
-              managing recurrence — across prefill, memory, and scheduling — rather than tuning
+              Two open frameworks that share one thesis: efficient LLM inference comes from
+              managing recurrence — across prefill and memory — rather than tuning
               any single kernel. Every system ships with papers, traces and a reproducible harness.
             </p>
           </Reveal>

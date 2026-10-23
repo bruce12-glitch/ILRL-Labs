@@ -1,10 +1,10 @@
-import { ArrowRight, ArrowUpRight, Mail, FileText, Code2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, FileText, Code2, Workflow, Layers, BrainCircuit } from "lucide-react";
 import { Link } from "../router";
 import { Reveal } from "../components/Reveal";
 import { HeroScene } from "../components/HeroScene";
 import { AttentionMotif } from "../components/Diagrams";
 import { GithubIcon } from "../components/icons";
-import { SITE, PROJECTS, PAPERS, PEOPLE, NEWS, stats } from "../data/lab";
+import { SITE, PROJECTS, PAPERS, PEOPLE, NEWS, DIRECTIONS, stats, type Direction } from "../data/lab";
 
 const container = "mx-auto max-w-6xl px-5 sm:px-8";
 
@@ -161,42 +161,69 @@ function Mission() {
   );
 }
 
-/* ── Research index ───────────────────────────────────────────────────── */
-function ResearchIndex() {
+/* ── Current research directions ──────────────────────────────────────── */
+const directionIcon: Record<Direction["icon"], typeof Workflow> = {
+  prefill: Workflow,
+  kv: Layers,
+  agi: BrainCircuit,
+};
+
+function ResearchDirections() {
   return (
     <section className="hairline-b">
       <div className={`${container} py-16 sm:py-20`}>
-        <SectionHead index="02 / Research" title="Three systems, one loop." linkTo="research" linkLabel="All research" />
-        <div className="border-t border-line">
-          {PROJECTS.map((p, i) => (
-            <Reveal key={p.id} delay={i * 90}>
-              <Link
-                to="research"
-                anchor={p.id}
-                className="row-item group -mx-5 grid gap-x-10 gap-y-3 rounded-xl border-b border-line px-5 py-8 sm:grid-cols-12 sm:items-baseline sm:px-8"
+        <Reveal className="mb-10">
+          <p className="eyebrow">02 / Research</p>
+          <h2 className="mt-3 font-serif text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+            Current research directions
+          </h2>
+          <p className="mt-3 text-[1rem] text-inksoft">Some of the things we work on.</p>
+          <Link
+            to="publications"
+            className="group mt-5 inline-flex items-center gap-1.5 text-[0.9rem] font-medium text-navy u-line-out"
+          >
+            View all publications
+            <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </Reveal>
+        <div className="grid border-y border-line md:grid-cols-3 md:divide-x md:divide-line">
+          {DIRECTIONS.map((d, i) => {
+            const Icon = directionIcon[d.icon];
+            const project = PROJECTS.find((p) => p.id === d.projectId);
+            return (
+              <Reveal
+                key={d.id}
+                delay={i * 90}
+                className={`flex flex-col py-8 md:px-8 ${i > 0 ? "border-t border-line md:border-t-0" : ""} md:first:pl-0 md:last:pr-0`}
               >
-                <div className="sm:col-span-2">
-                  <span className="font-mono text-[11px] tracking-[0.18em] text-gold">{p.tag}</span>
-                  <span className="mt-1 block font-mono text-[10px] tracking-[0.14em] text-inkmute uppercase">
-                    {p.area}
-                  </span>
-                </div>
-                <div className="sm:col-span-9">
-                  <h3 className="font-serif text-2xl font-medium tracking-tight text-ink transition-colors duration-300 group-hover:text-navy sm:text-3xl">
-                    {p.name}
-                  </h3>
-                  <p className="mt-2 max-w-2xl text-[0.95rem] leading-relaxed text-inksoft">
-                    {p.headline}
-                  </p>
-                </div>
-                <div className="sm:col-span-1 sm:justify-self-end">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-linedeep text-inksoft transition-all duration-300 group-hover:border-navy group-hover:bg-navy group-hover:text-paper">
-                    <ArrowUpRight size={16} />
-                  </span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+                <h3 className="flex items-center gap-3 font-serif text-[1.45rem] leading-snug font-medium tracking-tight text-ink">
+                  <Icon size={18} className="shrink-0 text-navy" aria-hidden="true" />
+                  {d.title}
+                </h3>
+                <p className="mt-4 text-[0.95rem] leading-relaxed text-inksoft">{d.blurb}</p>
+                {project && (
+                  <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6">
+                    <Link
+                      to="research"
+                      anchor={project.id}
+                      className="group inline-flex items-center gap-1.5 text-[0.88rem] font-medium text-navy u-line-out"
+                    >
+                      {project.name}
+                      <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                    </Link>
+                    <a
+                      href={project.code}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 font-mono text-[12px] text-inksoft transition-colors hover:text-navy"
+                    >
+                      <Code2 size={14} /> Code
+                    </a>
+                  </div>
+                )}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -406,7 +433,7 @@ function JoinCta() {
                   {SITE.email}
                 </a>
                 <a
-                  href={SITE.frontendRepo}
+                  href={SITE.githubOrg}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-6 py-3 text-[0.95rem] font-medium text-paper transition-colors duration-300 hover:border-paper hover:text-paper"
@@ -428,7 +455,7 @@ export default function Home() {
     <>
       <Hero />
       <Mission />
-      <ResearchIndex />
+      <ResearchDirections />
       <News />
       <SelectedPubs />
       <PeoplePreview />

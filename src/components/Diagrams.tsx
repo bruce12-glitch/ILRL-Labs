@@ -373,74 +373,7 @@ export function PageEntroKVDiagram() {
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════
- * RecLoop: queue → scheduler → batch → GPU → loop back
- * ══════════════════════════════════════════════════════════════════════ */
-
-export function RecLoopDiagram() {
-  return (
-    <svg viewBox="0 0 760 304" className="h-auto w-full" role="img" aria-label="RecLoop 3D inference-in-loop diagram">
-      <SharedDefs withArrow="arr-l" />
-
-      {/* request queue */}
-      <T x={28} y={36} ls="2">REQUESTS</T>
-      {[0, 1, 2].map((i) => (
-        <g key={i}>
-          <IsoBlock x={28} y={58 + i * 28} w={82} h={13} dx={6} dy={4} faces={PAPER_TILE} shadow />
-          <T x={40} y={68 + i * 28} size={8.8} fill={MUTE}>prompt</T>
-        </g>
-      ))}
-
-      <line x1={120} y1={92} x2={160} y2={92} stroke={SOFT} strokeWidth={1.3} markerEnd="url(#arr-l)" />
-
-      {/* scheduler */}
-      <IsoBlock x={170} y={64} w={154} h={48} dx={10} dy={7} faces={PAPER_TILE} shadow />
-      <T x={250} y={86} size={10} fill={INK} anchor="middle">recurrence-aware</T>
-      <T x={250} y={102} size={10} fill={INK} anchor="middle">scheduler</T>
-      <T x={250} y={120} size={8.6} fill={MUTE} anchor="middle">admit · preempt · speculate</T>
-
-      <line x1={334} y1={92} x2={374} y2={92} stroke={SOFT} strokeWidth={1.3} markerEnd="url(#arr-l)" />
-
-      {/* continuous batch container */}
-      <IsoBlock x={386} y={60} w={154} h={52} dx={10} dy={7} faces={{ top: "#F3F6FB", front: "#DCE3F1", side: "#C7D2E7" }} shadow />
-      {[0, 1, 2, 3].map((i) => (
-        <IsoBlock
-          key={i}
-          x={400} y={76 + i * 16} w={124 - i * 18} h={8}
-          dx={6} dy={4}
-          faces={i === 0 ? DEEP : i === 1 ? MID : LIGHT}
-          shadow
-        />
-      ))}
-      <T x={462} y={126} size={8.8} fill={MUTE} anchor="middle">continuous batch · by future cost</T>
-
-      <line x1={550} y1={92} x2={590} y2={92} stroke={SOFT} strokeWidth={1.3} markerEnd="url(#arr-l)" />
-
-      {/* GPU block */}
-      <IsoBlock x={600} y={72} w={96} h={42} dx={9} dy={6} faces={{ top: "#4A4338", front: "#2A241B", side: INK }} shadow />
-      <T x={648} y={93} size={11} fill={PAPER} anchor="middle">GPU</T>
-      <T x={648} y={109} size={8.6} fill="#C6BEAF" anchor="middle">decode step</T>
-
-      {/* recurrence loop-back */}
-      <path
-        d="M 648 126 L 648 226 L 252 226 L 252 126"
-        fill="none" stroke={GOLD} strokeWidth={1.5} strokeDasharray="5 4" markerEnd="url(#arr-l)"
-      />
-      <IsoBlock x={380} y={228} w={212} h={13} dx={7} dy={4} faces={{ top: "#FFF8E9", front: "#F2E3BC", side: "#D4B36B" }} shadow />
-      <T x={486} y={238} size={9.2} fill={GOLD} anchor="middle">re-enter the loop — recurrence is the workload</T>
-
-      {/* SLO chip */}
-      <T x={28} y={208} size={9.2}>SLO chip</T>
-      <IsoBlock x={28} y={218} w={188} h={16} dx={7} dy={4} faces={PAPER_TILE} shadow />
-      <T x={42} y={230.5} size={9.2} fill={NAVY}>P99 decode −41% · goodput 1.9×</T>
-
-      <T x={28} y={294} size={9.2} fill={MUTE}>Fig. 3 — Inference always happens in a loop; RecLoop schedules each iteration by predicted recurrence cost.</T>
-    </svg>
-  );
-}
-
-export function ProjectDiagram({ kind }: { kind: "prefill" | "kv" | "loop" }) {
+export function ProjectDiagram({ kind }: { kind: "prefill" | "kv" }) {
   if (kind === "prefill") return <EntroPrefillDiagram />;
-  if (kind === "kv") return <PageEntroKVDiagram />;
-  return <RecLoopDiagram />;
+  return <PageEntroKVDiagram />;
 }

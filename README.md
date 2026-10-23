@@ -18,7 +18,6 @@ Public website for the **Inference-in-Loop & Recurrence Lab (ILRL)**.
 |-----------------|-------|--------|
 | **EntroPrefill** | Sparse attention for long-context prefill | Active |
 | **Page-EntroKV** | Entropy-tiered paged KV-cache compression | Active |
-| **RecLoop** | Recurrence-aware continuous batching scheduler | Active |
 
 **Founded:** October 2026  
 **Contact:** inba.research.ilrl.labs@gmail.com  

@@ -11,8 +11,6 @@ export const SITE = {
   email: "inba.research.ilrl.labs@gmail.com",
   github: "https://github.com/bruce12-glitch",
   githubOrg: "https://github.com/bruce12-glitch",
-  frontendRepo: "https://github.com/bruce12-glitch/ILRL-Labs",
-  backendRepo: "https://github.com/bruce12-glitch/ILRL-Backend",
   founded: "Oct 2026",
 };
 
@@ -38,7 +36,7 @@ export interface Project {
   arxiv: string;
   arxivLabel: string;
   code: string;
-  diagram: "prefill" | "kv" | "loop";
+  diagram: "prefill" | "kv";
   paperId: string;
 }
 
@@ -67,7 +65,7 @@ export const PROJECTS: Project[] = [
     ],
     arxiv: "https://arxiv.org/abs/2512.03310",
     arxivLabel: "arXiv:2512.03310",
-    code: "https://github.com/bruce12-glitch/ILRL",
+    code: "https://github.com/bruce12-glitch/Entro-Prefill",
     diagram: "prefill",
     paperId: "entroprefill-paper",
   },
@@ -95,37 +93,46 @@ export const PROJECTS: Project[] = [
     ],
     arxiv: "https://arxiv.org/abs/2603.01421",
     arxivLabel: "arXiv:2603.01421",
-    code: "https://github.com/bruce12-glitch/ILRL",
+    code: "https://github.com/bruce12-glitch/PageEntro-KV",
     diagram: "kv",
     paperId: "page-entrokv-paper",
   },
+];
+
+/* ── Current research directions ─────────────────────────────────────── */
+
+export interface Direction {
+  id: string;
+  icon: "prefill" | "kv" | "agi";
+  title: string;
+  blurb: string;
+  /** links the card to a pillar on the Research page */
+  projectId?: string;
+}
+
+export const DIRECTIONS: Direction[] = [
   {
-    id: "recloop",
-    tag: "SYS–03",
-    name: "RecLoop",
-    area: "Serving · Scheduling",
-    headline:
-      "Inference-in-loop scheduling: recurrence-aware continuous batching for low-latency LLM serving",
-    status: "Active",
+    id: "long-context-prefill",
+    icon: "prefill",
+    title: "Efficient long-context prefill",
     blurb:
-      "Serving is a loop: requests arrive, batch, decode a step, and re-enter the scheduler — thousands of times per second. RecLoop treats that recurrence as the object to optimize, closing the loop between the scheduler and the kernels it dispatches with admission control, preemption and speculative loops driven by predicted recurrence cost.",
-    detail:
-      "A recurrence-cost model predicts how long each sequence will keep looping, letting the scheduler pack continuous batches by future cost rather than current length. Paired with EntroPrefill's sparse prefill and Page-EntroKV's tiered cache, the runtime meets P99 deadlines with far less capacity — the lab's thesis is that inference always happens in a loop, and systems should be designed around that recurrence.",
-    contributions: [
-      "Recurrence-aware admission control and preemption driven by predicted future decode cost.",
-      "Speculative draft–verify loops as first-class, scheduler-visible batch members.",
-      "Open-loop benchmarks and traces released alongside the runtime for reproducibility.",
-    ],
-    metrics: [
-      { value: "−41%", label: "P99 decode latency" },
-      { value: "1.9×", label: "SLO-attaining goodput" },
-      { value: "8", label: "GPU config, SLOs held" },
-    ],
-    arxiv: "https://arxiv.org/abs/2601.00887",
-    arxivLabel: "arXiv:2601.00887",
-    code: "https://github.com/bruce12-glitch/ILRL",
-    diagram: "loop",
-    paperId: "recloop-paper",
+      "We build sparse-attention prefill paths that escape quadratic latency on long prompts, pruning low-information key ranges before they ever reach the kernel (EntroPrefill).",
+    projectId: "entroprefill",
+  },
+  {
+    id: "kv-cache-memory",
+    icon: "kv",
+    title: "KV-cache & memory systems",
+    blurb:
+      "We study entropy-tiered, paged KV-cache compression that breaks the memory wall, so serving stacks fit larger batches and longer contexts on the same hardware (Page-EntroKV).",
+    projectId: "page-entrokv",
+  },
+  {
+    id: "inference-in-agi",
+    icon: "agi",
+    title: "Inference in AGI",
+    blurb:
+      "We investigate how inference-time compute, memory and recurrence scale as models move toward general intelligence: reasoning loops, long-horizon agents and test-time scaling that stay efficient to serve.",
   },
 ];
 
@@ -222,7 +229,7 @@ export const NEWS: NewsItem[] = [
 ];
 
 export const stats = [
-  { value: "3", label: "open-source systems" },
+  { value: "2", label: "open-source systems" },
   { value: "Soon", label: "publications — being added" },
   { value: "2", label: "researchers" },
   { value: "100%", label: "code released open" },

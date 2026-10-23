@@ -76,20 +76,6 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href={SITE.frontendRepo} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 text-paper/75 hover:text-paper">
-                  <GithubIcon size={15} className="text-paper/45 transition-colors group-hover:text-paper" />
-                  Frontend repo
-                  <ArrowUpRight size={12} className="text-paper/35" />
-                </a>
-              </li>
-              <li>
-                <a href={SITE.backendRepo} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 text-paper/75 hover:text-paper">
-                  <GithubIcon size={15} className="text-paper/45 transition-colors group-hover:text-paper" />
-                  Backend repo
-                  <ArrowUpRight size={12} className="text-paper/35" />
-                </a>
-              </li>
-              <li>
                 <a href={`mailto:${SITE.email}`} className="group inline-flex items-center gap-2 text-paper/75 hover:text-paper">
                   <Mail size={15} className="text-paper/45 transition-colors group-hover:text-paper" />
                   Email
