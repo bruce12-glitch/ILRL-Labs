@@ -18,10 +18,10 @@ const LINKS: { to: Page; label: string }[] = [
  */
 export function LogoMark({ className, dark = false }: { className?: string; dark?: boolean }) {
   const uid = useId().replace(/:/g, "");
-  const lime = dark ? "#D6FF8A" : "#C6FF4A";
-  const limeMid = dark ? "#AEE85C" : "#9FD62E";
-  const limedim = dark ? "#A8CC5E" : "#8FB23F";
-  const limeBright = dark ? "#DCFF85" : "#E4FF9E";
+  const accent = dark ? "#9CD1FF" : "#007FFF";
+  const accentMid = dark ? "#5BB0FF" : "#0047AB";
+  const accentDim = dark ? "#75A7DE" : "#002D62";
+  const accentBright = dark ? "#D8ECFF" : "#87C2FF";
 
   return (
     <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
@@ -36,12 +36,12 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
           />
         </filter>
         <linearGradient id={`gn-${uid}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={limeMid} />
-          <stop offset="100%" stopColor={lime} />
+          <stop offset="0%" stopColor={accentMid} />
+          <stop offset="100%" stopColor={accent} />
         </linearGradient>
         <linearGradient id={`gg-${uid}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={limeBright} />
-          <stop offset="100%" stopColor={limedim} />
+          <stop offset="0%" stopColor={accentBright} />
+          <stop offset="100%" stopColor={accentDim} />
         </linearGradient>
       </defs>
       <g filter={`url(#lg-${uid})`}>
@@ -49,7 +49,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
         <path
           d="M20 15.5 C26 8, 36 10, 35 18 C34 26, 26 28, 20 24.5"
           fill="none"
-          stroke={lime}
+          stroke={accent}
           strokeWidth="3.6"
           strokeLinecap="round"
           opacity="0.4"
@@ -70,7 +70,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
           strokeWidth="3.6"
           strokeLinecap="round"
         />
-        {/* limedim crossover diamond */}
+        {/* dimensional crossover diamond */}
         <path
           d="M17.5 20 L20 16 L22.5 20 L20 24 Z"
           fill={`url(#gg-${uid})`}
@@ -79,7 +79,7 @@ export function LogoMark({ className, dark = false }: { className?: string; dark
         <path
           d="M30 13 L32.5 15.5 L29.5 15"
           fill="none"
-          stroke={limedim}
+          stroke={accentDim}
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -114,7 +114,7 @@ export function Nav() {
     <header
       className={cn(
         "sticky top-0 z-50 hairline-b bg-ink/90 backdrop-blur-lg transition-shadow duration-300",
-        scrolled && !open && "shadow-[0_1px_0_rgba(198,255,74,0.06),0_10px_30px_-18px_rgba(0,0,0,0.8)]"
+        scrolled && !open && "shadow-[0_1px_0_rgba(0,127,255,0.10),0_10px_30px_-18px_rgba(0,0,0,0.8)]"
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">

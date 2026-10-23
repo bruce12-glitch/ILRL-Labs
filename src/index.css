@@ -5,20 +5,20 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Cyber Lime & Ink */
-  --color-ink: #080a05;
-  --color-inkraise: #11160b;
-  --color-fog: #ecf4dd;
-  --color-fogsoft: #a8b396;
-  --color-fogmute: #6b7660;
-  --color-line: #202a15;
-  --color-linedeep: #33421f;
-  --color-lime: #c6ff4a;
-  --color-limedeep: #9fd62e;
-  --color-limedim: #94bd45;
-  --color-limewash: #1a250e;
+  /* Midnight / Sapphire / Cobalt / Azure */
+  --color-ink: #000000;
+  --color-inkraise: #002d62;
+  --color-fog: #f5faff;
+  --color-fogsoft: #b9d8ff;
+  --color-fogmute: #75a7de;
+  --color-line: #002d62;
+  --color-linedeep: #0047ab;
+  --color-lime: #007fff;
+  --color-limedeep: #0047ab;
+  --color-limedim: #87c2ff;
+  --color-limewash: #002d62;
 
-  --shadow-card: 0 1px 0 rgba(201, 255, 74, 0.04), 0 16px 40px -20px rgba(0, 0, 0, 0.75);
+  --shadow-card: 0 1px 0 rgba(0, 127, 255, 0.08), 0 16px 40px -20px rgba(0, 0, 0, 0.82);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────── */
@@ -37,7 +37,7 @@ body {
 }
 
 ::selection {
-  background: rgba(198, 255, 74, 0.22);
+  background: rgba(0, 127, 255, 0.32);
   color: var(--color-fog);
 }
 
@@ -62,7 +62,7 @@ body {
   border-radius: 2px;
 }
 
-/* Grain overlay — light phosphor noise for the dark page */
+/* Grain overlay — a restrained azure texture for the dark page */
 .grain::before {
   content: "";
   position: fixed;
@@ -70,7 +70,7 @@ body {
   pointer-events: none;
   z-index: 60;
   opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 1 0 0 0 0 0.45 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0.5 0 0 0 0 1 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ── Editorial helpers ────────────────────────────────────────────────── */
@@ -163,7 +163,7 @@ body {
 .card-3d:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 0 0 1px rgba(198, 255, 74, 0.22),
+    0 0 0 1px rgba(0, 127, 255, 0.28),
     0 20px 48px -22px rgba(0, 0, 0, 0.85);
 }
 

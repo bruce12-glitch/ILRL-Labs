@@ -8,8 +8,8 @@ import { useEffect, useRef } from "react";
  * user prefers reduced motion.
  * ──────────────────────────────────────────────────────────────────────── */
 
-const LIME = [198, 255, 74] as const;
-const LIMEDIM = [115, 160, 45] as const;
+const AZURE = [0, 127, 255] as const;
+const COBALT = [0, 71, 171] as const;
 
 function mix(a: readonly number[], b: readonly number[], t: number) {
   return `rgb(${Math.round(a[0] + (b[0] - a[0]) * t)},${Math.round(a[1] + (b[1] - a[1]) * t)},${Math.round(a[2] + (b[2] - a[2]) * t)})`;
@@ -97,7 +97,7 @@ export function HeroScene({ className }: { className?: string }) {
           const heat = Math.min(1, Math.max(0, 0.5 + wave * 0.5));
           g.beginPath();
           g.arc(x, y, rad, 0, Math.PI * 2);
-          g.fillStyle = mix(LIMEDIM, LIME, heat * 0.75);
+          g.fillStyle = mix(COBALT, AZURE, heat * 0.75);
           g.globalAlpha = 0.08 + depth * 0.32;
           g.fill();
         }
@@ -109,7 +109,7 @@ export function HeroScene({ className }: { className?: string }) {
       g.save();
       g.translate(cx, horizon + spreadY * 0.42);
       g.rotate(-0.18);
-      g.strokeStyle = "rgba(198,255,74,0.4)";
+      g.strokeStyle = "rgba(0,127,255,0.4)";
       g.lineWidth = 1.4;
       for (const [rx, ry, alpha] of [[150, 34, 0.5], [110, 24, 0.35], [70, 15, 0.25]] as const) {
         g.globalAlpha = alpha;
@@ -121,7 +121,7 @@ export function HeroScene({ className }: { className?: string }) {
       const sx = Math.cos(loopT) * 150;
       const sy = Math.sin(loopT) * 34;
       g.globalAlpha = 0.95;
-      g.fillStyle = "rgb(198,255,74)";
+      g.fillStyle = "rgb(0,127,255)";
       g.beginPath();
       g.arc(sx, sy, 3.4, 0, Math.PI * 2);
       g.fill();

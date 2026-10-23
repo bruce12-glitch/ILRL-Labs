@@ -1,15 +1,15 @@
 import type { CSSProperties } from "react";
 
 /* ────────────────────────────────────────────────────────────────────────
- * 3D isometric motif for ILRL — Cyber Lime & Ink palette.
+ * 3D isometric motif for ILRL — Midnight, Cobalt & Azure palette.
  * Clean depth — just enough to make the research feel tangible.
  * ──────────────────────────────────────────────────────────────────────── */
 
-const LIME = "#C6FF4A";
-const SOFT = "#A8B396";
-const MUTE = "#6B7660";
-const LINE = "#2C3A1D";
-const LINE_SOFT = "#222C16";
+const AZURE = "#007FFF";
+const SOFT = "#B9D8FF";
+const MUTE = "#75A7DE";
+const LINE = "#0047AB";
+const LINE_SOFT = "#002D62";
 
 interface FaceSet {
   top: string;
@@ -17,9 +17,9 @@ interface FaceSet {
   side: string;
 }
 
-const DEEP: FaceSet = { top: "#E2FF9C", front: "#C6FF4A", side: "#96D42E" };
-const MID: FaceSet = { top: "#5E7C2C", front: "#465E1E", side: "#334613" };
-const LIGHT: FaceSet = { top: "#3A4C21", front: "#2A3A16", side: "#1E2B0F" };
+const DEEP: FaceSet = { top: "#B9D8FF", front: "#007FFF", side: "#0047AB" };
+const MID: FaceSet = { top: "#0047AB", front: "#002D62", side: "#001B3D" };
+const LIGHT: FaceSet = { top: "#002D62", front: "#001B3D", side: "#000E22" };
 
 /* ── IsoBlock: the primitive 3D tile ──────────────────────────────────── */
 
@@ -115,7 +115,7 @@ function T(props: {
 
 function LegendIso({ x, y, kind }: { x: number; y: number; kind: "deep" | "pruned" | "mid" | "light" }) {
   const fMap = { deep: DEEP, mid: MID, light: LIGHT, pruned: DEEP };
-  if (kind === "pruned") return <IsoBlock x={x} y={y} w={10} h={10} dx={3} dy={2} dashed stroke={LIME} strokeOpacity={0.4} />;
+  if (kind === "pruned") return <IsoBlock x={x} y={y} w={10} h={10} dx={3} dy={2} dashed stroke={AZURE} strokeOpacity={0.4} />;
   return <IsoBlock x={x} y={y} w={10} h={10} dx={3} dy={2} faces={fMap[kind]} shadow />;
 }
 
@@ -146,7 +146,7 @@ export function AttentionMotif() {
 
       if (pruned) {
         cells.push(
-          <IsoBlock key={`${r}-${c}`} x={x} y={y} w={cell} h={cell} dx={dx} dy={dy} dashed stroke={LIME} strokeOpacity={0.3} />
+          <IsoBlock key={`${r}-${c}`} x={x} y={y} w={cell} h={cell} dx={dx} dy={dy} dashed stroke={AZURE} strokeOpacity={0.3} />
         );
       } else {
         cells.push(
@@ -185,7 +185,7 @@ export function AttentionMotif() {
       <SharedDefs />
 
       {/* header bar */}
-      <T x={14} y={12} ls="2" fill={LIME}>ATTENTION IS NOT FREE</T>
+      <T x={14} y={12} ls="2" fill={AZURE}>ATTENTION IS NOT FREE</T>
       <T x={432} y={12} italic anchor="end" size={11} fill={SOFT}>pages, tiers &amp; loops</T>
       <line x1={0} y1={28} x2={448} y2={28} stroke={LINE_SOFT} />
 

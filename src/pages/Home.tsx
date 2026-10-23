@@ -416,7 +416,7 @@ function JoinCta() {
               aria-hidden="true"
               className="absolute inset-0 opacity-[0.09]"
               style={{
-                backgroundImage: `radial-gradient(circle at 1px 1px, #080a05 1px, transparent 0)`,
+                backgroundImage: `radial-gradient(circle at 1px 1px, #000000 1px, transparent 0)`,
                 backgroundSize: "26px 26px",
                 maskImage: "linear-gradient(120deg, transparent 30%, black 100%)",
               }}
