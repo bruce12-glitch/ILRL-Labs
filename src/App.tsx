@@ -351,7 +351,7 @@ export function App() {
                         <h3 className="type-heading-sm" style={{ marginBottom: "var(--space-12)" }}>
                           {dir.title}
                         </h3>
-                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light"), marginBottom: "var(--space-16)" }}>
+                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light)", marginBottom: "var(--space-16)" }}>
                           {dir.hypothesis}
                         </p>
                         <ul style={{ paddingLeft: "var(--space-16)", display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
