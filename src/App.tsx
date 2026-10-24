@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles/tokens.css";
 import {
   LAB_META,
@@ -8,35 +8,56 @@ import {
   PAPERS,
   PEOPLE,
   NEWS,
-  Project,
-  Paper,
+  type Project,
+  type Paper,
 } from "./data/lab";
+import { isPaperList, isProjectList } from "./utils/lab-data";
 
 type RouteTab = "overview" | "research" | "publications" | "people";
+const TABS: RouteTab[] = ["overview", "research", "publications", "people"];
+
+function currentTab(): RouteTab {
+  const tab = window.location.hash.replace(/^#\/?/, "").split("/")[0];
+  return TABS.includes(tab as RouteTab) ? tab as RouteTab : "overview";
+}
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<RouteTab>("overview");
+  const [activeTab, setActiveTab] = useState<RouteTab>(currentTab);
   const [projects, setProjects] = useState<Project[]>(PROJECTS);
   const [papers, setPapers] = useState<Paper[]>(PAPERS);
-  const [copiedBibtexId, setCopiedBibtexId] = useState<string | null>(null);
-  const [apiStatus, setApiStatus] = useState<"local-monograph" | "synced-api">("local-monograph");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [copyState, setCopyState] = useState<{ id: string; success: boolean } | null>(null);
+  const copyTimer = useRef<number | undefined>(undefined);
+  const menuToggle = useRef<HTMLButtonElement>(null);
 
-  // Sync hash route on load and popstate
+  // Keep direct links and browser history in sync, including the root route.
   useEffect(() => {
     const syncHash = () => {
-      const hash = window.location.hash.replace("#/", "").replace("#", "") as RouteTab;
-      if (["overview", "research", "publications", "people"].includes(hash)) {
-        setActiveTab(hash);
-      }
+      setActiveTab(currentTab());
+      setMenuOpen(false);
+      window.scrollTo({ top: 0, behavior: "auto" });
     };
-    syncHash();
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
   }, []);
 
-  // Fault-tolerant API hydration (Fixes BUG-03)
   useEffect(() => {
-    const apiBase = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_API_URL;
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuToggle.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
+  // Static content remains usable if an optional API is offline or out of date.
+  useEffect(() => {
+    const apiBase = import.meta.env.VITE_API_URL?.trim();
     if (!apiBase) return;
 
     const controller = new AbortController();
@@ -47,42 +68,52 @@ export function App() {
       fetch(`${apiBase.replace(/\/$/, "")}/api/papers`, { signal: controller.signal }),
     ])
       .then(async ([projRes, paperRes]) => {
-        if (projRes.ok) {
-          const projData = await projRes.json();
-          if (Array.isArray(projData) && projData.length > 0) setProjects(projData);
-        }
-        if (paperRes.ok) {
-          const paperData = await paperRes.json();
-          if (Array.isArray(paperData) && paperData.length > 0) setPapers(paperData);
-        }
-        setApiStatus("synced-api");
+        const [projData, paperData]: unknown[] = await Promise.all([
+          projRes.ok ? projRes.json() : null,
+          paperRes.ok ? paperRes.json() : null,
+        ]);
+        if (controller.signal.aborted) return;
+        if (isProjectList(projData)) setProjects(projData);
+        if (isPaperList(paperData)) setPapers(paperData);
       })
       .catch(() => {
-        // Deterministic fallback to local monograph data without console noise
-        setApiStatus("local-monograph");
+        // Keep the bundled content on HTTP, network, timeout, or JSON errors.
       })
       .finally(() => window.clearTimeout(timer));
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
   }, []);
 
   const navigate = (tab: RouteTab) => {
     setActiveTab(tab);
+    setMenuOpen(false);
     window.location.hash = `#/${tab}`;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
-  const copyBibtex = (id: string, bibtex: string) => {
-    navigator.clipboard.writeText(bibtex);
-    setCopiedBibtexId(id);
-    window.setTimeout(() => setCopiedBibtexId(null), 1800);
+  const copyBibtex = async (id: string, bibtex: string) => {
+    window.clearTimeout(copyTimer.current);
+    try {
+      await navigator.clipboard.writeText(bibtex);
+      setCopyState({ id, success: true });
+      copyTimer.current = window.setTimeout(() => setCopyState(null), 1800);
+    } catch {
+      setCopyState({ id, success: false });
+    }
   };
 
   return (
     <div>
+      <a className="skip-link" href="#main-content" onClick={(event) => {
+        event.preventDefault();
+        document.getElementById("main-content")?.focus();
+      }}>Skip to content</a>
       {/* Top Institutional Navigation Bar */}
       <header className="ilrl-header">
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-16)" }}>
+        <div className="ilrl-brand">
           <a
             href="#/overview"
             onClick={(e) => {
@@ -103,7 +134,7 @@ export function App() {
             ILRL LABS
           </a>
           <span
-            className="type-dense"
+            className="type-dense ilrl-brand-description"
             style={{
               color: "var(--color-text-muted-on-light)",
               borderLeft: "1px solid var(--color-border-hairline-light)",
@@ -114,11 +145,18 @@ export function App() {
           </span>
         </div>
 
-        <nav style={{ display: "flex", alignItems: "center", gap: "var(--space-22)", flexWrap: "wrap" }}>
-          {(["overview", "research", "publications", "people"] as RouteTab[]).map((tab) => (
-            <button
+        <button ref={menuToggle} type="button" className="button-secondary ilrl-menu-toggle"
+          aria-controls="primary-navigation" aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}>
+          {menuOpen ? "Close menu" : "Menu"}
+        </button>
+        <nav id="primary-navigation" className="ilrl-navigation" aria-label="Primary" data-open={menuOpen}>
+          {TABS.map((tab) => (
+            <a
               key={tab}
-              onClick={() => navigate(tab)}
+              href={`#/${tab}`}
+              aria-current={activeTab === tab ? "page" : undefined}
+              onClick={(event) => { event.preventDefault(); navigate(tab); }}
               className="link-editorial"
               style={{
                 fontWeight: activeTab === tab ? 700 : 400,
@@ -127,7 +165,7 @@ export function App() {
               }}
             >
               {tab}
-            </button>
+            </a>
           ))}
           <a
             href={LAB_META.frontendRepo}
@@ -143,7 +181,7 @@ export function App() {
         </nav>
       </header>
 
-      <main className="ilrl-container">
+      <main id="main-content" tabIndex={-1} className="ilrl-container">
         {/* HERO SECTION */}
         {activeTab === "overview" && (
           <section className="ilrl-section">
@@ -154,9 +192,6 @@ export function App() {
                 </p>
                 <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-8)" }}>
                   LOC: {LAB_META.location.toUpperCase()}
-                </p>
-                <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                  DATA SOURCE: {apiStatus === "synced-api" ? "LIVE API" : "STATIC MONOGRAPH"}
                 </p>
               </div>
 
@@ -218,7 +253,7 @@ export function App() {
 
               <div className="ilrl-col-8" style={{ display: "flex", flexDirection: "column", gap: "var(--space-22)" }}>
                 {projects.map((project) => (
-                  <article key={project.id} className="card-editorial-light">
+                  <article id={project.id} key={project.id} className="card-editorial-light">
                     <div>
                       <div
                         style={{
@@ -278,12 +313,13 @@ export function App() {
                         marginTop: "var(--space-16)",
                       }}
                     >
+                      <div className="benchmark-scroll" role="region" aria-label={`${project.title} benchmarks`} tabIndex={0}>
                       <table className="benchmark-table">
                         <thead>
                           <tr>
-                            <th>METRIC</th>
-                            <th>MEASURED VALUE</th>
-                            <th>EXPERIMENTAL CONDITION</th>
+                            <th scope="col">METRIC</th>
+                            <th scope="col">MEASURED VALUE</th>
+                            <th scope="col">EXPERIMENTAL CONDITION</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -298,6 +334,7 @@ export function App() {
                           ))}
                         </tbody>
                       </table>
+                      </div>
 
                       <div style={{ display: "flex", gap: "var(--space-12)", marginTop: "var(--space-22)", flexWrap: "wrap" }}>
                         <a href={project.code} target="_blank" rel="noreferrer" className="button-inverse">
@@ -307,8 +344,7 @@ export function App() {
                           href={project.arxivUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="button-secondary"
-                          style={{ color: "var(--color-text-muted)", borderColor: "var(--color-border-hairline-dark)" }}
+                          className="button-secondary button-on-dark"
                         >
                           arXiv:{project.arxivId}
                         </a>
@@ -435,9 +471,14 @@ export function App() {
                         onClick={() => copyBibtex(paper.id, paper.bibtex)}
                         className="button-secondary"
                       >
-                        {copiedBibtexId === paper.id ? "Copied BibTeX" : "Copy BibTeX"}
+                        {copyState?.id === paper.id && copyState.success ? "Copied BibTeX" : "Copy BibTeX"}
                       </button>
                     </div>
+                    <p role="status" className="type-dense">
+                      {copyState?.id === paper.id && (copyState.success
+                        ? "BibTeX copied."
+                        : "Copy unavailable. Select and copy the citation above.")}
+                    </p>
                   </article>
                 ))}
               </div>
@@ -511,7 +552,7 @@ export function App() {
                           flexWrap: "wrap",
                         }}
                       >
-                        <div style={{ display: "flex", gap: "var(--space-12)", alignItems: "baseline" }}>
+                        <div className="ilrl-news-copy">
                           <span className="type-mono" style={{ fontSize: "12px", color: "var(--color-text-muted-on-light)" }}>
                             {item.date}
                           </span>
