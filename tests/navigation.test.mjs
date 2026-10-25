@@ -19,7 +19,7 @@ test("unknown and retired routes return to About", () => {
 });
 
 test("the final section stays active at the bottom, even when its top cannot reach the header", () => {
-  assert.equal(activeSection([["interests", -150], ["future-goals", 420]], true), "future-goals");
-  assert.equal(activeSection([["about", -800], ["members", -250], ["research", 88], ["interests", 700]], false), "research");
-  assert.equal(activeSection([["about", 72], ["members", 550]], false), "about");
+  assert.equal(activeSection([["future-goals", -150], ["members", 420]], true), "members");
+  assert.equal(activeSection([["about", -800], ["research", 88], ["interests", 700], ["members", 1200]], false), "research");
+  assert.equal(activeSection([["about", 72], ["research", 550]], false), "about");
 });

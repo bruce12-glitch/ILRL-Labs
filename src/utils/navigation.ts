@@ -1,8 +1,8 @@
-export const SECTIONS = ["about", "members", "research", "interests", "future-goals"] as const;
+export const SECTIONS = ["about", "research", "interests", "future-goals", "members"] as const;
 export type Section = typeof SECTIONS[number];
 
 export function activeSection(tops: ReadonlyArray<readonly [Section, number]>, atBottom: boolean): Section {
-  if (atBottom) return "future-goals";
+  if (atBottom) return SECTIONS[SECTIONS.length - 1];
   return [...tops].reverse().find(([, top]) => top <= 110)?.[0] ?? "about";
 }
 

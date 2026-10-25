@@ -13,15 +13,11 @@ npm ci
 npm run dev
 ```
 
-The site has five sections: About, Members, Research, Interests, and Future Goals. Content and verified publication links live in `src/data/lab.ts`. The two member portraits are stored in `public/people/`.
+The site has five sections, in order: About, Research, Interests, Future Goals, and Members. Content and verified publication links live in `src/data/lab.ts`. The two member portraits are stored in `public/people/`.
 
 Research titles and arXiv links open the actual preprints; PDF and project code links are listed separately. Vinoth Nandakumar's MIT mathematics doctorate links to the MIT thesis record. Interests and goals describe future directions, separate from published work.
 
-## Three.js visual
-
-`src/components/HeroScene.tsx` renders a mathematical loop with Three.js and OrbitControls. It uses WebGL when available and the Three.js SVG renderer otherwise. Both support dragging, keyboard arrows, and a global pause control. Animation pauses outside the viewport and in hidden tabs, follows reduced-motion preferences, and releases resources on unmount. WebGL pixel density is capped; the SVG fallback uses fewer faces and a 24 fps cap. The geometry is procedural; no video or remote 3D assets are loaded.
-
-The site uses native section anchors, with redirects for previously shared hash routes. A compact navigation menu is available on narrow screens.
+The layout uses a text-led introduction, compact publication rows, and member profiles at the end of the page. The 3D visual and its dependencies have been removed. Native section anchors retain support for previously shared hash routes. A compact navigation menu is available on narrow screens, and hover transitions follow reduced-motion preferences.
 
 ## Validation
 
@@ -31,7 +27,7 @@ npm run typecheck
 npm run build
 ```
 
-Navigation tests cover the current sections, old page URLs, and removed routes. Check the live site for WebGL rendering, pause/rotation controls, section navigation, portraits, and paper links.
+Navigation tests cover the current sections, old page URLs, removed routes, and the final active section at the footer. Check the live site for section navigation, section order, portraits, and paper links.
 
 ## Deployment
 

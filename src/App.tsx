@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUpRight, Mail, Menu, Pause, Play, X } from "lucide-react";
-import { HeroScene } from "./components/HeroScene";
+import { ArrowDown, ArrowUpRight, Mail, Menu, X } from "lucide-react";
 import { GOALS, INTERESTS, LAB, PAPERS, PEOPLE } from "./data/lab";
 import { activeSection, resolveSection, SECTIONS, type Section } from "./utils/navigation";
 import "./styles/tokens.css";
@@ -31,17 +30,6 @@ function SectionTitle({ number, title, note, id }: { number: string; title: stri
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<Section>(() => resolveSection(window.location.hash));
-  const [motionRequested, setMotionRequested] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  const motion = motionRequested && !reducedMotion;
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
   useEffect(() => {
     const navigate = () => {
       const section = resolveSection(window.location.hash);
@@ -72,7 +60,7 @@ export default function App() {
     };
   }, []);
 
-  return <div className="site" data-motion={motion}>
+  return <div className="site">
     <a className="skip-link" href="#main-content" onClick={event => { event.preventDefault(); document.getElementById("main-content")?.focus(); }}>Skip to content</a>
     <header className="site-header">
       <div className="container header-inner">
@@ -81,7 +69,6 @@ export default function App() {
           {SECTIONS.map(section => <a key={section} href={`#${section}`} aria-current={active === section ? "location" : undefined} onClick={() => setMenuOpen(false)}>{LABELS[section]}</a>)}
         </nav>
         <div className="header-controls">
-          <button className="control-button" type="button" disabled={reducedMotion} onClick={() => setMotionRequested(value => !value)} aria-label={reducedMotion ? "Motion reduced by system setting" : motion ? "Pause animation" : "Resume animation"} title={reducedMotion ? "Following your reduced-motion setting" : motion ? "Pause animation" : "Resume animation"}>{motion ? <Pause size={13} /> : <Play size={13} />}</button>
           <a href={`mailto:${LAB.email}`} className="control-button email-control" aria-label="Email ILRL Labs"><Mail size={16} strokeWidth={1.5} /></a>
           <button className="control-button menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-controls="site-navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(value => !value)}>{menuOpen ? <X size={19} /> : <Menu size={19} />}</button>
         </div>
@@ -93,31 +80,16 @@ export default function App() {
         <div className="about-copy">
           <p className="lab-fullname">{LAB.fullName}</p>
           <h1 id="about-title">LLM inference<br /><span>&amp; ML systems.</span></h1>
-          <p className="about-description">{LAB.about}</p>
-          <p className="about-interests">We are also interested in holographic model compression, looped transformers, and the future of inference in AGI.</p>
-          <div className="about-links"><a className="inline-link" href="#research">Research <ArrowDown size={13} /></a><a className="inline-link" href="#members">Members <ArrowUpRight size={13} /></a></div>
         </div>
-        <HeroScene motion={motion} />
-      </section>
-
-      <section id="members" className="content-section container" aria-labelledby="members-title">
-        <SectionTitle id="members-title" number="01" title="Members" note="The people working on these questions." />
-        <div className="member-list">
-          {PEOPLE.map(person => <article className="member" key={person.name}>
-            <img className="portrait" src={`${import.meta.env.BASE_URL}${person.photo}`} width="136" height="164" alt={person.name} loading="lazy" />
-            <div className="member-information">
-              <p className="member-role">{person.role}</p>
-              <h3>{person.name}</h3>
-              {person.education && <a className="member-education" href={person.educationSource} target="_blank" rel="noreferrer">{person.education}</a>}
-              <p className="member-focus">{person.focus}</p>
-              <div className="member-links">{person.links.map(link => <a href={link.href} key={link.label} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={11} /></a>)}</div>
-            </div>
-          </article>)}
+        <div className="about-details">
+          <p className="about-description">{LAB.about}</p>
+          <p className="about-interests">Our interests include holographic model compression, looped transformers, the future of inference in AGI, and unexplored conflicts in AGI.</p>
+          <div className="about-links"><a className="inline-link" href="#research">Research papers <ArrowDown size={13} /></a><a className="inline-link" href="#interests">Our interests <ArrowUpRight size={13} /></a></div>
         </div>
       </section>
 
       <section id="research" className="content-section container" aria-labelledby="research-title">
-        <SectionTitle id="research-title" number="02" title="Research" note="Current papers on inference and memory." />
+        <SectionTitle id="research-title" number="01" title="Research" note="Current papers on inference and memory." />
         <div className="paper-list">
           {PAPERS.map(paper => <article className="paper" key={paper.id} id={paper.id}>
             <div className="paper-meta"><span>Preprint · {paper.date}</span><span>{paper.topic}</span></div>
@@ -134,7 +106,7 @@ export default function App() {
       </section>
 
       <section id="interests" className="content-section container" aria-labelledby="interests-title">
-        <SectionTitle id="interests-title" number="03" title="Interests" note="Directions we want to explore." />
+        <SectionTitle id="interests-title" number="02" title="Interests" note="Directions we want to explore." />
         <div className="interest-list">
           {INTERESTS.map((interest, i) => <article className={`interest interest-${interest.id}`} key={interest.id}>
             <span className="interest-symbol" aria-hidden="true">{i === 0 ? "⊞" : i === 1 ? "↶" : "↗"}</span>
@@ -144,8 +116,24 @@ export default function App() {
       </section>
 
       <section id="future-goals" className="content-section goals-section container" aria-labelledby="goals-title">
-        <SectionTitle id="goals-title" number="04" title="Future Goals" note="What we want to do next." />
+        <SectionTitle id="goals-title" number="03" title="Future Goals" note="What we want to do next." />
         <ol className="goal-list">{GOALS.map(goal => <li key={goal.title}><h3>{goal.title}</h3><p>{goal.text}</p></li>)}</ol>
+      </section>
+
+      <section id="members" className="content-section members-section container" aria-labelledby="members-title">
+        <SectionTitle id="members-title" number="04" title="Members" note="The people working on these questions." />
+        <div className="member-list">
+          {PEOPLE.map(person => <article className="member" key={person.name}>
+            <img className="portrait" src={`${import.meta.env.BASE_URL}${person.photo}`} width="136" height="164" alt={person.name} loading="lazy" />
+            <div className="member-information">
+              <p className="member-role">{person.role}</p>
+              <h3>{person.name}</h3>
+              {person.education && <a className="member-education" href={person.educationSource} target="_blank" rel="noreferrer">{person.education}</a>}
+              <p className="member-focus">{person.focus}</p>
+              <div className="member-links">{person.links.map(link => <a href={link.href} key={link.label} target="_blank" rel="noreferrer">{link.label}<ArrowUpRight size={11} /></a>)}</div>
+            </div>
+          </article>)}
+        </div>
       </section>
     </main>
 

@@ -3,7 +3,7 @@ export const LAB = {
   fullName: "Inference in Loops and Recurrence Learning Labs",
   email: "inba.research.ilrl.labs@gmail.com",
   url: "https://bruce12-glitch.github.io/ILRL-Labs/",
-  about: "We work on LLM inference and ML systems. Our current research looks at how language models use memory, process long contexts, and reuse computation.",
+  about: "We work on LLM inference, ML systems, and computer science algorithms. Our research looks at how language models use memory, process long contexts, and reuse computation.",
 };
 
 export const PAPERS = [
@@ -78,6 +78,18 @@ export const INTERESTS = [
     title: "Future of Inference in AGI",
     description: "How inference should evolve for longer reasoning, persistent memory, and systems that act over time.",
     keywords: "Reasoning · Memory · Adaptation",
+  },
+  {
+    id: "algorithms",
+    title: "Computer Science Algorithms",
+    description: "Algorithms for learning and inference, with attention to computational complexity and memory use.",
+    keywords: "Algorithms · Complexity · Efficiency",
+  },
+  {
+    id: "agi-conflicts",
+    title: "Unexplored Conflicts in AGI",
+    description: "Questions about where reasoning, memory, learning, and objectives may work against one another, and how those conflicts could be resolved.",
+    keywords: "Reasoning · Learning · Objectives",
   },
 ] as const;
 
