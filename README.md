@@ -1,6 +1,6 @@
 # ILRL Labs
 
-The website for **Inference in Loops and Recurrence Learning Labs**.
+Website for **Inference in Loops and Recurrence Learning Labs**.
 
 [Visit the lab](https://bruce12-glitch.github.io/ILRL-Labs/)
 
@@ -13,17 +13,15 @@ npm ci
 npm run dev
 ```
 
-The public site runs without a backend or API credentials. Project descriptions, member information, and notes live in `src/data/lab.ts`.
+The site has five sections: About, Members, Research, Interests, and Future Goals. Content and verified publication links live in `src/data/lab.ts`. The two member portraits are stored in `public/people/`.
 
-## Pages and interactions
+Research titles and arXiv links open the actual preprints; PDF and project code links are listed separately. Vinoth Nandakumar's MIT mathematics doctorate links to the MIT thesis record. Interests and goals describe future directions, separate from published work.
 
-- Home: a CSS 3D inference sketch with pointer rotation and prefill/decode controls.
-- Research: two current projects, short descriptions, and links to their code.
-- Playground: a token walkthrough, adjustable KV-page budget, and a causal attention map.
-- Members: Inbasekaran S and Vinoth Nandakumar, with their original portraits and profile links.
-- Notes: short explanations of the questions behind the work.
+## Three.js visual
 
-The playground uses illustrative scores and weights, not model outputs or benchmark measurements. It does not reproduce the research algorithms. Motion can be paused in the header and follows the system's reduced-motion setting. Touch devices keep their normal cursor; pointer devices use small SVG cursors.
+`src/components/HeroScene.tsx` renders a mathematical loop with WebGL and Three.js OrbitControls. It supports dragging, keyboard arrows, and a global pause control. It pauses outside the viewport and in hidden tabs, follows reduced-motion preferences, caps pixel density, and releases GPU resources on unmount. The rest of the site works if WebGL is unavailable. It uses procedural geometry; no video or remote 3D assets are loaded.
+
+The site uses native section anchors, with redirects for previously shared hash routes. A compact navigation menu is available on narrow screens.
 
 ## Validation
 
@@ -33,12 +31,12 @@ npm run typecheck
 npm run build
 ```
 
-The tests check page-budget selection, causal attention normalization, route compatibility, member data, and link restrictions. The app uses React, TypeScript, Vite, Lucide icons, and ordinary CSS. Fonts come from the device's system stack.
+Navigation tests cover the current sections, old page URLs, and removed routes. Check the live site for WebGL rendering, pause/rotation controls, section navigation, portraits, and paper links.
 
 ## Deployment
 
-Pushing to `main` runs `.github/workflows/ci.yml`. The build job runs tests, type checking, and a production build. The deployment job publishes `dist/` to GitHub Pages. Pull requests run the build checks without publishing.
+Pushing to `main` runs `.github/workflows/ci.yml`. The build job runs tests, TypeScript, and a production build. The deployment job publishes `dist/` to GitHub Pages. Pull requests run the checks without publishing.
 
-Vite uses relative asset paths for project hosting under `/ILRL-Labs/`. JavaScript and CSS are inlined into the built HTML; portraits, favicon, and cursor assets are included alongside it. Hash routes preserve direct links without a server rewrite.
+Vite uses relative asset paths for `/ILRL-Labs/`. JavaScript and CSS are inlined in the built HTML. Portraits, favicon, and cursor assets are included alongside it. No backend, credentials, or proprietary fonts are required.
 
 Contact: inba.research.ilrl.labs@gmail.com

@@ -1,30 +1,35 @@
-export const LAB_META = {
+export const LAB = {
   name: "ILRL",
   fullName: "Inference in Loops and Recurrence Learning Labs",
   email: "inba.research.ilrl.labs@gmail.com",
   url: "https://bruce12-glitch.github.io/ILRL-Labs/",
+  about: "We work on LLM inference and ML systems. Our current research looks at how language models use memory, process long contexts, and reuse computation.",
 };
 
-export const PROJECTS = [
-  {
-    id: "page-entrokv",
-    name: "Page-EntroKV",
-    area: "Memory",
-    question: "What is worth keeping?",
-    summary: "We study which KV-cache pages to keep when a language model runs out of memory.",
-    detail: "The focus is page-level selection, shared attention heads, and staying within a fixed memory budget.",
-    code: "https://github.com/bruce12-glitch/PageEntro-KV",
-    demo: "cache",
-  },
+export const PAPERS = [
   {
     id: "entroprefill",
     name: "EntroPrefill",
-    area: "Inference",
-    question: "Does every passage need a full read?",
-    summary: "We work on pruning retrieved context before it passes through the later layers of a language model.",
-    detail: "We want to reduce work before the first answer token, while keeping the evidence the answer needs.",
+    title: "Rényi-Guided Context Pruning with Conditional Stability Guarantees for Retrieval-Augmented Generation",
+    author: "Inbasekaran S",
+    date: "October 2026",
+    topic: "Context pruning",
+    summary: "Pruning context during prefill, with explicit deletion constraints and conditional bounds on output stability.",
+    arxiv: "https://arxiv.org/abs/2610.09757",
+    pdf: "https://arxiv.org/pdf/2610.09757",
     code: "https://github.com/bruce12-glitch/Entro-Prefill",
-    demo: "loop",
+  },
+  {
+    id: "page-entrokv",
+    name: "Page-EntroKV",
+    title: "Hardware-Aligned, Entropy-Weighted KV-Cache Eviction under Grouped-Query Attention",
+    author: "Inbasekaran S",
+    date: "October 2026",
+    topic: "KV-cache memory",
+    summary: "Selecting physical KV-cache pages under grouped-query attention, with entropy-weighted head pooling and exact memory budgets.",
+    arxiv: "https://arxiv.org/abs/2610.03135",
+    pdf: "https://arxiv.org/pdf/2610.03135",
+    code: "https://github.com/bruce12-glitch/PageEntro-KV",
   },
 ] as const;
 
@@ -32,7 +37,9 @@ export const PEOPLE = [
   {
     name: "Inbasekaran S",
     role: "Founder & Researcher",
-    focus: "LLM inference and memory systems.",
+    focus: "LLM inference and ML systems",
+    education: "",
+    educationSource: "",
     photo: "people/inba.jpg",
     links: [
       { label: "GitHub", href: "https://github.com/bruce12-glitch" },
@@ -42,7 +49,9 @@ export const PEOPLE = [
   {
     name: "Vinoth Nandakumar",
     role: "Research Mentor",
-    focus: "Mathematics and theoretical research.",
+    focus: "Mathematics and machine learning",
+    education: "PhD in Mathematics, MIT",
+    educationSource: "https://dspace.mit.edu/entities/publication/3e87b7bb-0f9a-4278-90e7-24083a43b599",
     photo: "people/vinu.jpg",
     links: [
       { label: "Scholar", href: "https://scholar.google.com/citations?user=SKq_-mgAAAAJ&hl=en" },
@@ -51,20 +60,29 @@ export const PEOPLE = [
   },
 ] as const;
 
-export const NOTES = [
+export const INTERESTS = [
   {
-    title: "Why think in pages?",
-    topic: "Memory",
-    text: "A serving system stores keys and values in blocks of memory. Keeping a few useful tokens scattered across many blocks can leave most of those blocks occupied. We look at the page as a unit of selection, so the decision lines up with the memory it actually uses.",
+    id: "compression",
+    title: "Holographic Model Compression",
+    description: "Can shared representations hold more model capacity while keeping inference practical?",
+    keywords: "Representation · Compression · Capacity",
   },
   {
-    title: "Before the first token.",
-    topic: "Inference",
-    text: "A long prompt has to be processed before a model can begin its answer. In retrieval-augmented generation, some of that prompt may be irrelevant. Our question is where to remove that context, and how to tell when removing it changes the answer.",
+    id: "recurrence",
+    title: "Looped Transformers",
+    description: "Reusing layers across depth, and understanding what repeated computation costs in memory and latency.",
+    keywords: "Recurrence · Memory · Compute",
   },
   {
-    title: "A loop still needs memory.",
-    topic: "Recurrence",
-    text: "Reusing a layer can reduce the number of model parameters. It does not make every other cost disappear. We are interested in how the memory needed for inference changes as a model takes more steps.",
+    id: "agi",
+    title: "Future of Inference in AGI",
+    description: "How inference should evolve for longer reasoning, persistent memory, and systems that act over time.",
+    keywords: "Reasoning · Memory · Adaptation",
   },
+] as const;
+
+export const GOALS = [
+  { title: "Evaluate at a larger scale.", text: "Test on larger models and serving systems. Report memory, latency, and task quality together." },
+  { title: "Connect compression and recurrence.", text: "Study how compressed representations and reused layers change the cost of inference." },
+  { title: "Make the results reproducible.", text: "Release evaluation code, configurations, and measured results alongside our papers." },
 ] as const;

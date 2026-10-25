@@ -1,147 +1,163 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { WebGLRenderer } from "three";
 
-/* ────────────────────────────────────────────────────────────────────────
- * HeroScene — lightweight animated 3D backdrop for the hero.
- * A perspective dot-grid "attention field" with a travelling wave plus a
- * slow orbital loop (the recurrence motif). Dependency-free canvas:
- * DPR-capped, pauses offscreen, and renders one static frame when the
- * user prefers reduced motion.
- * ──────────────────────────────────────────────────────────────────────── */
+/** A mathematical loop as a movable object, separate from the research claims. */
+export function HeroScene({ motion }: { motion: boolean }) {
+  const host = useRef<HTMLDivElement>(null);
+  const motionRef = useRef(motion);
+  const refresh = useRef<() => void>(() => {});
+  const [status, setStatus] = useState<"loading" | "ready" | "fallback">("loading");
 
-export function HeroScene({ className }: { className?: string }) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => { motionRef.current = motion; refresh.current(); }, [motion]);
 
   useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const g: CanvasRenderingContext2D = ctx;
-    const theme = getComputedStyle(canvas);
-    const accent = theme.getPropertyValue("--color-lime").trim();
-    const teal = theme.getPropertyValue("--color-limedim").trim();
+    const node = host.current;
+    if (!node) return;
+    let disposed = false;
+    let renderer: WebGLRenderer | undefined;
+    let release = () => {};
 
-    let raf = 0;
-    let running = true;
-    let w = 0;
-    let h = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    async function createScene() {
+      const [THREE, { OrbitControls }] = await Promise.all([
+        import("three"), import("three/addons/controls/OrbitControls.js"),
+      ]);
+      if (disposed || !node) return;
+      try {
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
+        const gl = renderer;
+        gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        gl.setClearColor(0xfaf9f5, 0);
+        gl.outputColorSpace = THREE.SRGBColorSpace;
+        gl.domElement.tabIndex = 0;
+        gl.domElement.setAttribute("aria-label", "Three-dimensional recurrent loop. Drag to rotate, or use the arrow keys.");
+        node.appendChild(gl.domElement);
 
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      w = Math.max(1, Math.floor(rect.width));
-      h = Math.max(1, Math.floor(rect.height));
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
+        camera.position.set(0, 0, 9.2);
+        const controls = new OrbitControls(camera, gl.domElement);
+        gl.domElement.style.touchAction = "pan-y";
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        controls.autoRotateSpeed = 0.35;
+        controls.rotateSpeed = 0.65;
+        controls.dampingFactor = 0.07;
+        scene.add(new THREE.HemisphereLight(0xffffff, 0xb6a692, 2.7));
+        const light = new THREE.DirectionalLight(0xffffff, 3);
+        light.position.set(-3, 5, 6);
+        scene.add(light);
+        const rim = new THREE.DirectionalLight(0xe7bd9d, 1.7);
+        rim.position.set(4, -2, 3);
+        scene.add(rim);
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        const visible = !!entry?.isIntersecting;
-        if (visible && !running && !reduced) {
-          running = true;
-          raf = requestAnimationFrame(draw);
-        } else if (!visible && running) {
-          running = false;
-          cancelAnimationFrame(raf);
+        const object = new THREE.Group();
+        object.rotation.set(-0.25, 0.2, -0.28);
+        scene.add(object);
+        const segments = 240;
+        const radial = 32;
+        const surface = new THREE.TorusKnotGeometry(1.55, 0.38, segments, radial, 2, 3);
+        object.add(new THREE.Mesh(surface, new THREE.MeshStandardMaterial({ color: 0xd7cfc1, roughness: 0.6, metalness: 0.18 })));
+        const positions = surface.getAttribute("position");
+        const normals = surface.getAttribute("normal");
+        const wire = new THREE.LineBasicMaterial({ color: 0x3d3832, transparent: true, opacity: 0.46 });
+        const copper = new THREE.LineBasicMaterial({ color: 0xa35b3e, transparent: true, opacity: 0.9 });
+        for (let strand = 0; strand < radial; strand++) {
+          const points = new Float32Array(segments * 3);
+          for (let step = 0; step < segments; step++) {
+            const index = step * (radial + 1) + strand;
+            points[step * 3] = positions.getX(index) + normals.getX(index) * 0.004;
+            points[step * 3 + 1] = positions.getY(index) + normals.getY(index) * 0.004;
+            points[step * 3 + 2] = positions.getZ(index) + normals.getZ(index) * 0.004;
+          }
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute("position", new THREE.BufferAttribute(points, 3));
+          object.add(new THREE.LineLoop(geometry, strand % 8 === 0 ? copper : wire));
         }
-      },
-      { threshold: 0 }
-    );
-    io.observe(canvas);
 
-    const onVis = () => {
-      if (document.hidden && running) {
-        running = false;
-        cancelAnimationFrame(raf);
-      } else if (!document.hidden && !running && !reduced && canvas.getBoundingClientRect().top < window.innerHeight) {
-        running = true;
-        raf = requestAnimationFrame(draw);
+        let frame = 0;
+        let visible = true;
+        let previous = 0;
+        const render = () => { if (!disposed) gl.render(scene, camera); };
+        const animate = (time: number) => {
+          if (disposed) return;
+          controls.update(previous ? Math.min((time - previous) / 1000, 0.05) : 0);
+          previous = time;
+          render();
+          frame = requestAnimationFrame(animate);
+        };
+        const sync = () => {
+          cancelAnimationFrame(frame);
+          previous = 0;
+          controls.autoRotate = motionRef.current;
+          controls.enableDamping = motionRef.current;
+          if (motionRef.current && visible && !document.hidden) frame = requestAnimationFrame(animate);
+          else render();
+        };
+        refresh.current = sync;
+        const resize = () => {
+          const rect = node.getBoundingClientRect();
+          gl.setSize(Math.max(1, rect.width), Math.max(1, rect.height));
+          camera.aspect = rect.width / Math.max(1, rect.height);
+          camera.updateProjectionMatrix();
+          render();
+        };
+        const keyboard = (event: KeyboardEvent) => {
+          if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === "ArrowLeft") object.rotation.y -= 0.12;
+          if (event.key === "ArrowRight") object.rotation.y += 0.12;
+          if (event.key === "ArrowUp") object.rotation.x -= 0.12;
+          if (event.key === "ArrowDown") object.rotation.x += 0.12;
+          render();
+        };
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(node);
+        const intersectionObserver = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
+        intersectionObserver.observe(node);
+        controls.addEventListener("change", render);
+        gl.domElement.addEventListener("keydown", keyboard);
+        document.addEventListener("visibilitychange", sync);
+        const lost = () => { visible = false; sync(); setStatus("fallback"); };
+        gl.domElement.addEventListener("webglcontextlost", lost);
+        resize();
+        sync();
+        node.dataset.renderer = "threejs";
+        setStatus("ready");
+
+        release = () => {
+          cancelAnimationFrame(frame);
+          refresh.current = () => {};
+          resizeObserver.disconnect();
+          intersectionObserver.disconnect();
+          document.removeEventListener("visibilitychange", sync);
+          gl.domElement.removeEventListener("keydown", keyboard);
+          gl.domElement.removeEventListener("webglcontextlost", lost);
+          controls.removeEventListener("change", render);
+          controls.dispose();
+          scene.traverse(child => {
+            if (child instanceof THREE.Mesh || child instanceof THREE.LineLoop) {
+              child.geometry.dispose();
+              const materials = Array.isArray(child.material) ? child.material : [child.material];
+              materials.forEach(material => material.dispose());
+            }
+          });
+          gl.dispose();
+          gl.domElement.remove();
+        };
+      } catch {
+        renderer?.dispose();
+        renderer?.domElement.remove();
+        if (!disposed) setStatus("fallback");
       }
-    };
-    document.addEventListener("visibilitychange", onVis);
-
-    // Project a tilted plane: grid (gx, gz) → screen with wave height y.
-    function draw(t = 0) {
-      if (!running && t !== 0) return;
-      g.clearRect(0, 0, w, h);
-
-      const cols = 34;
-      const rows = 18;
-      const cx = w * 0.72;
-      const horizon = h * 0.30;
-      const spreadX = Math.min(w * 0.42, 520);
-      const spreadY = Math.max(h * 0.30, 120);
-      const time = t / 1600;
-
-      for (let r = 0; r < rows; r++) {
-        const v = r / (rows - 1); // 0 far → 1 near
-        for (let c = 0; c < cols; c++) {
-          const u = c / (cols - 1) - 0.5;
-          const wave =
-            Math.sin(u * 6 + time * 1.4) * 0.5 +
-            Math.sin(v * 5 - time * 1.1) * 0.5;
-          const depth = v * v; // perspective compression
-          const x = cx + u * spreadX * (0.35 + depth);
-          const y = horizon + depth * spreadY + wave * 7 * depth - 8 * (1 - depth);
-          const rad = 0.7 + depth * 1.7;
-          const heat = Math.min(1, Math.max(0, 0.5 + wave * 0.5));
-          g.beginPath();
-          g.arc(x, y, rad, 0, Math.PI * 2);
-          g.fillStyle = heat > 0.5 ? accent : teal;
-          g.globalAlpha = 0.08 + depth * 0.32;
-          g.fill();
-        }
-      }
-      g.globalAlpha = 1;
-
-      // Orbital loop — the recurrence motif, slow and faint.
-      const loopT = reduced ? 0.6 : time * 0.35;
-      g.save();
-      g.translate(cx, horizon + spreadY * 0.42);
-      g.rotate(-0.18);
-      g.strokeStyle = accent;
-      g.lineWidth = 1.4;
-      for (const [rx, ry, alpha] of [[150, 34, 0.5], [110, 24, 0.35], [70, 15, 0.25]] as const) {
-        g.globalAlpha = alpha;
-        g.beginPath();
-        g.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-        g.stroke();
-      }
-      // satellite token travelling the outer loop
-      const sx = Math.cos(loopT) * 150;
-      const sy = Math.sin(loopT) * 34;
-      g.globalAlpha = 0.95;
-      g.fillStyle = teal;
-      g.beginPath();
-      g.arc(sx, sy, 3.4, 0, Math.PI * 2);
-      g.fill();
-      g.restore();
-      g.globalAlpha = 1;
-
-      if (!reduced && running) raf = requestAnimationFrame(draw);
     }
-
-    if (reduced) {
-      running = false;
-      draw(0);
-    } else {
-      raf = requestAnimationFrame(draw);
-    }
-
-    return () => {
-      running = false;
-      cancelAnimationFrame(raf);
-      io.disconnect();
-      ro.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
-    };
+    createScene().catch(() => { if (!disposed) setStatus("fallback"); });
+    return () => { disposed = true; release(); };
   }, []);
 
-  return <canvas ref={ref} className={className} aria-hidden="true" />;
+  return <figure className="recurrence-figure" data-status={status}>
+    <div className="scene-stage" ref={host}>
+      <svg className="scene-fallback" viewBox="0 0 400 400" fill="none" aria-hidden="true"><path d="M200 200C70-30 10 130 100 230s260 160 180-10S60 40 100 180s220 180 220 40S220 20 200 200Z" stroke="#a35b3e" strokeWidth="1.5" /></svg>
+    </div>
+    <figcaption><span>Recurrence</span><span>{status === "ready" ? "Drag to rotate ↗" : "Inference · Memory · Computation"}</span></figcaption>
+  </figure>;
 }
