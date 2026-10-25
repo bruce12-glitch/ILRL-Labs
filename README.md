@@ -19,7 +19,7 @@ Research titles and arXiv links open the actual preprints; PDF and project code 
 
 ## Three.js visual
 
-`src/components/HeroScene.tsx` renders a mathematical loop with WebGL and Three.js OrbitControls. It supports dragging, keyboard arrows, and a global pause control. It pauses outside the viewport and in hidden tabs, follows reduced-motion preferences, caps pixel density, and releases GPU resources on unmount. The rest of the site works if WebGL is unavailable. It uses procedural geometry; no video or remote 3D assets are loaded.
+`src/components/HeroScene.tsx` renders a mathematical loop with Three.js and OrbitControls. It uses WebGL when available and the Three.js SVG renderer otherwise. Both support dragging, keyboard arrows, and a global pause control. Animation pauses outside the viewport and in hidden tabs, follows reduced-motion preferences, and releases resources on unmount. WebGL pixel density is capped; the SVG fallback uses fewer faces and a 24 fps cap. The geometry is procedural; no video or remote 3D assets are loaded.
 
 The site uses native section anchors, with redirects for previously shared hash routes. A compact navigation menu is available on narrow screens.
 
