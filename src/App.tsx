@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUpRight, Mail, Menu, Pause, Play, X } from "lucide-react";
 import { HeroScene } from "./components/HeroScene";
 import { GOALS, INTERESTS, LAB, PAPERS, PEOPLE } from "./data/lab";
-import { resolveSection, SECTIONS, type Section } from "./utils/navigation";
+import { activeSection, resolveSection, SECTIONS, type Section } from "./utils/navigation";
 import "./styles/tokens.css";
 
 const LABELS: Record<Section, string> = {
@@ -54,18 +54,21 @@ export default function App() {
     };
     if (window.location.hash) navigate();
     window.addEventListener("hashchange", navigate);
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) setActive(entry.target.id as Section);
-      }
-    }, { rootMargin: "-12% 0px -68% 0px" });
-    SECTIONS.forEach(id => { const node = document.getElementById(id); if (node) observer.observe(node); });
+    const trackSection = () => {
+      const tops = SECTIONS.map(id => [id, document.getElementById(id)?.getBoundingClientRect().top ?? Infinity] as const);
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      setActive(activeSection(tops, atBottom));
+    };
+    window.addEventListener("scroll", trackSection, { passive: true });
+    window.addEventListener("resize", trackSection);
+    trackSection();
     const escape = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
     window.addEventListener("keydown", escape);
     return () => {
       window.removeEventListener("hashchange", navigate);
       window.removeEventListener("keydown", escape);
-      observer.disconnect();
+      window.removeEventListener("scroll", trackSection);
+      window.removeEventListener("resize", trackSection);
     };
   }, []);
 

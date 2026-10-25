@@ -1,6 +1,11 @@
 export const SECTIONS = ["about", "members", "research", "interests", "future-goals"] as const;
 export type Section = typeof SECTIONS[number];
 
+export function activeSection(tops: ReadonlyArray<readonly [Section, number]>, atBottom: boolean): Section {
+  if (atBottom) return "future-goals";
+  return [...tops].reverse().find(([, top]) => top <= 110)?.[0] ?? "about";
+}
+
 /** Keep previously shared page links useful after removing the separate pages. */
 export function resolveSection(hash: string): Section {
   const slug = hash.replace(/^#\/?/, "").split("/")[0].toLowerCase();

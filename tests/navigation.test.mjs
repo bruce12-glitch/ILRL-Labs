@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { resolveSection, SECTIONS } from "../src/utils/navigation.ts";
+import { activeSection, resolveSection, SECTIONS } from "../src/utils/navigation.ts";
 
 test("section links resolve with native and previous hash formats", () => {
   for (const section of SECTIONS) {
@@ -16,4 +16,10 @@ test("unknown and retired routes return to About", () => {
   for (const hash of ["", "#/", "#unknown", "#/playground/cache", "#/home"]) {
     assert.equal(resolveSection(hash), "about");
   }
+});
+
+test("the final section stays active at the bottom, even when its top cannot reach the header", () => {
+  assert.equal(activeSection([["interests", -150], ["future-goals", 420]], true), "future-goals");
+  assert.equal(activeSection([["about", -800], ["members", -250], ["research", 88], ["interests", 700]], false), "research");
+  assert.equal(activeSection([["about", 72], ["members", 550]], false), "about");
 });
