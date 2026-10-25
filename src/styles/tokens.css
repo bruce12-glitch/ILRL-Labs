@@ -200,6 +200,11 @@ main:focus { outline: none; }
 }
 @media (max-width: 390px) { .container { padding-inline: 18px; }.hero h1 { font-size: 56px; }.hero-actions { gap: 15px; }.pointer-hint { display: none; }.project-links { gap: 6px; }.project-links a { font-size: 11px; }.tool-tabs > button { font-size: 10px; gap: 4px; padding-inline: 5px; }.tool-tabs .icon-badge { width: 23px; }.page-grid { gap: 9px; }.cache-page { min-height: 56px; }.attention-table { border-spacing: 3px; }.attention-table th:first-child { width: 57px; }.footer-email span { font-size: 10px; } }
 @media (hover: none) { .pointer-hint { display: none; } }
+.attention-table { max-width: 520px; margin-inline: auto; }
+.axis-label { margin-left: 0; text-align: center; }
+.motion-toggle, .tool-actions .icon-button { min-width: 44px; min-height: 44px; }
+.stage-dots button { width: 44px; }
+.segmented button { min-height: 44px; }
 .site-shell[data-motion="false"] *, .site-shell[data-motion="false"] *::before, .site-shell[data-motion="false"] *::after { animation-play-state: paused !important; transition-duration: 0s !important; }
 .site-shell[data-motion="false"] .circuit-world { transform: rotateX(17deg) rotateY(-12deg) rotateZ(-5deg); }
 .site-shell[data-motion="false"] .project-card:hover, .site-shell[data-motion="false"] .button:hover, .site-shell[data-motion="false"] .member-card:hover img { transform: none; }

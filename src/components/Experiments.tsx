@@ -41,7 +41,7 @@ export function HeroCircuit({ motion }: { motion: boolean }) {
         <path className="signal-route" d={phase === "decode" ? "M315 208V330H530V208H315" : "M48 208H315V330H530"} stroke="#786ba3" strokeWidth="2" />
         <circle className={`flow-dot flow-dot--${phase}`} r="5" fill="#a65b3f" stroke="#faf9f5" strokeWidth="3" />
         <text x="46" y="247" className="scene-label">input tokens</text><text x="214" y="298" className="scene-label">transformer layers</text>
-        <text x="485" y="190" className="scene-label">KV memory</text><text x="355" y="365" className="scene-label">one more token ↶</text>
+        <text x="533" y="312" textAnchor="middle" className="scene-label">KV memory</text><text x="355" y="365" className="scene-label">one more token ↶</text>
       </svg>
       <div className="prompt-tokens" aria-hidden="true">{["a", "b", "c", "d"].map((token, i) => <span key={token} style={{ "--i": i } as CSSProperties}>{token}</span>)}</div>
       <div className="compute-stack" aria-hidden="true">{[0, 1, 2, 3].map(layer => <div key={layer} className="layer-plate" style={{ "--layer": layer } as CSSProperties}>
