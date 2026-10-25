@@ -1,118 +1,44 @@
-# ILRL — Frontend
+# ILRL Labs
 
-Public website for the **Inference-in-Loop & Recurrence Lab (ILRL)**.
+The website for **Inference in Loops and Recurrence Learning Labs**.
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-14b8a6?style=for-the-badge)](https://bruce12-glitch.github.io/ILRL-Labs/)
-[![CI](https://github.com/bruce12-glitch/ILRL-Labs/actions/workflows/ci.yml/badge.svg)](https://github.com/bruce12-glitch/ILRL-Labs/actions/workflows/ci.yml)
-[![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
-[![Vite 7](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[Visit the lab](https://bruce12-glitch.github.io/ILRL-Labs/)
 
----
+## Development
 
-## 🧭 About ILRL
+Use Node.js 22 or newer.
 
-**ILRL (Inference-in-Loop & Recurrence Lab)** is a remote-first research lab building open systems for efficient LLM inference. Our work treats recurrence — the loop between inference and memory — as the fundamental unit of optimization.
-
-| Research Pillar | Focus | Status |
-|-----------------|-------|--------|
-| **EntroPrefill** | Sparse attention for long-context prefill | Active |
-| **Page-EntroKV** | Entropy-tiered paged KV-cache compression | Active |
-
-**Founded:** October 2026  
-**Contact:** inba.research.ilrl.labs@gmail.com  
-**Organization:** [github.com/bruce12-glitch](https://github.com/bruce12-glitch)
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 22+ (see `.nvmrc`)
-
-### Installation
 ```bash
-npm install
-cp .env.example .env   # set VITE_API_URL to your backend
-npm run dev            # http://localhost:5173
+npm ci
+npm run dev
 ```
 
-### Scripts
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build → `dist/index.html` |
-| `npm run preview` | Preview production build |
-| `npm run typecheck` | TypeScript check (no emit) |
-| `npm run lint` | ESLint check |
+The public site runs without a backend or API credentials. Project descriptions, member information, and notes live in `src/data/lab.ts`.
 
-### Environment Variables
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_URL` | Backend API base URL | `http://localhost:4000` |
+## Pages and interactions
 
-Only `VITE_`-prefixed variables reach the browser. `.env` is git-ignored; `.env.example` documents all values.
+- Home: a CSS 3D inference sketch with pointer rotation and prefill/decode controls.
+- Research: two current projects, short descriptions, and links to their code.
+- Playground: a token walkthrough, adjustable KV-page budget, and a causal attention map.
+- Members: Inbasekaran S and Vinoth Nandakumar, with their original portraits and profile links.
+- Notes: short explanations of the questions behind the work.
 
----
+The playground uses illustrative scores and weights, not model outputs or benchmark measurements. It does not reproduce the research algorithms. Motion can be paused in the header and follows the system's reduced-motion setting. Touch devices keep their normal cursor; pointer devices use small SVG cursors.
 
-## 📁 Project Structure
+## Validation
 
-```
-src/
-├── components/    # Nav, Footer, HeroScene, Diagrams, Reveal, Icons
-├── data/lab.ts    # Single source of truth (projects, people, news, site config)
-├── pages/         # Home, Research, Publications, People
-├── utils/         # api.ts (env-based client), cn.ts
-├── router.tsx     # Hash router (#/research, #/people, …)
-├── App.tsx
-└── main.tsx
-```
-
----
-
-## 🔗 Links
-
-- **Frontend Repo:** https://github.com/bruce12-glitch/ILRL-Labs
-- **Backend Repo:** https://github.com/bruce12-glitch/ILRL-Backend
-- **Organization:** https://github.com/bruce12-glitch
-- **Live Site:** https://bruce12-glitch.github.io/ILRL-Labs/
-
----
-
-## 🛠 Tech Stack
-
-- **Framework:** React 19 + Vite 7 + TypeScript
-- **Styling:** Tailwind CSS 4 (via `@tailwindcss/vite`)
-- **Animation:** Framer Motion (reduced-motion aware)
-- **3D:** Inline SVG + CSS animations (no Three.js dependency)
-- **Icons:** Custom SVG (GitHub, LinkedIn) + Lucide React
-- **Fonts:** Newsreader (serif), Inter (sans), IBM Plex Mono (mono) — self-hosted
-
----
-
-## 📦 Deployment
-
-### GitHub Pages
-The CI workflow (`.github/workflows/ci.yml`) builds and deploys to GitHub Pages on push to `main`. The Pages site is served from `dist/index.html` (single-file via `vite-plugin-singlefile`).
-
-### Custom Domain / Vercel / Netlify
 ```bash
+npm test
+npm run typecheck
 npm run build
-# Deploy dist/ to any static host
 ```
 
----
+The tests check page-budget selection, causal attention normalization, route compatibility, member data, and link restrictions. The app uses React, TypeScript, Vite, Lucide icons, and ordinary CSS. Fonts come from the device's system stack.
 
-## 🤝 Contributing
+## Deployment
 
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes
-4. Run `npm run typecheck && npm run build`
-5. Open a PR
+Pushing to `main` runs `.github/workflows/ci.yml`. The build job runs tests, type checking, and a production build. The deployment job publishes `dist/` to GitHub Pages. Pull requests run the build checks without publishing.
 
----
+Vite uses relative asset paths for project hosting under `/ILRL-Labs/`. JavaScript and CSS are inlined into the built HTML; portraits, favicon, and cursor assets are included alongside it. Hash routes preserve direct links without a server rewrite.
 
-## 📄 License
-
-MIT — see [LICENSE](LICENSE) for details.
+Contact: inba.research.ilrl.labs@gmail.com

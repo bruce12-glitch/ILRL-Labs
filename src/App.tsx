@@ -1,617 +1,79 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { ArrowRight, ArrowUpRight, Mail, Menu, Pause, Play, X, Plus, Layers, ScanLine } from "lucide-react";
+import { HeroCircuit, LoopMark, Playground } from "./components/Experiments";
+import { LAB_META, NOTES, PEOPLE, PROJECTS } from "./data/lab";
+import { parsePage, type Page } from "./utils/playground";
 import "./styles/tokens.css";
-import {
-  LAB_META,
-  STATS,
-  PROJECTS,
-  RESEARCH_DIRECTIONS,
-  PAPERS,
-  PEOPLE,
-  NEWS,
-  type Project,
-  type Paper,
-} from "./data/lab";
-import { isPaperList, isProjectList } from "./utils/lab-data";
 
-type RouteTab = "overview" | "research" | "publications" | "people";
-const TABS: RouteTab[] = ["overview", "research", "publications", "people"];
+const NAV: { page: Page; label: string }[] = [
+  { page: "research", label: "Research" },
+  { page: "playground", label: "Playground" },
+  { page: "people", label: "Members" },
+  { page: "publications", label: "Notes" },
+];
 
-function currentTab(): RouteTab {
-  const tab = window.location.hash.replace(/^#\/?/, "").split("/")[0];
-  return TABS.includes(tab as RouteTab) ? tab as RouteTab : "overview";
+function ProjectCards({ expanded = false }: { expanded?: boolean }) {
+  return <div className="project-grid">{PROJECTS.map((project, index) => <article className="project-card" key={project.id}>
+    <div className="project-card-top"><span className="micro">0{index + 1} / {project.area}</span><span className={`project-glyph project-glyph--${index}`} aria-hidden="true">{index === 0 ? <Layers size={26} strokeWidth={1.4} /> : <ScanLine size={26} strokeWidth={1.4} />}</span></div>
+    <span className="project-name">{project.name}</span><h3>{project.question}</h3><p>{project.summary}</p>
+    {expanded && <details className="project-details"><summary>What we are looking at <Plus size={16} /></summary><p>{project.detail}</p></details>}
+    <div className="project-links"><a href={`#/playground/${project.demo}`}>Explore the idea <ArrowRight size={16} /></a><a href={project.code} target="_blank" rel="noreferrer">Project code <ArrowUpRight size={15} /></a></div>
+  </article>)}</div>;
 }
 
-export function App() {
-  const [activeTab, setActiveTab] = useState<RouteTab>(currentTab);
-  const [projects, setProjects] = useState<Project[]>(PROJECTS);
-  const [papers, setPapers] = useState<Paper[]>(PAPERS);
+function Members() {
+  return <div className="member-grid">{PEOPLE.map(person => <article className="member-card" key={person.name}>
+    <div className="portrait-wrap"><img src={`${import.meta.env.BASE_URL}${person.photo}`} alt={person.name} width="256" height="256" /></div>
+    <div className="member-info"><span className="micro">{person.role}</span><h2>{person.name}</h2><p>{person.focus}</p><div className="member-links">{person.links.map(link => <a key={link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} <ArrowUpRight size={14} /></a>)}</div></div>
+  </article>)}</div>;
+}
+
+function PageIntro({ index, label, title, children }: { index: string; label: string; title: string; children: React.ReactNode }) {
+  return <div className="page-intro"><div className="eyebrow"><span className="index-label">{index}</span>{label}</div><h1>{title}</h1><p>{children}</p></div>;
+}
+
+function Home({ motion }: { motion: boolean }) {
+  return <>
+    <section className="hero container" aria-labelledby="home-title"><div className="hero-copy"><div className="lab-fullname">{LAB_META.fullName}</div><h1 id="home-title">One token.<br />Then the next<span className="accent-stop">.</span></h1><p>We work on the parts of language models that get expensive: long prompts, growing memory, and repeated computation.</p><div className="hero-actions"><a className="button primary" href="#/research">Our research <ArrowUpRight size={17} /></a><a className="text-link" href="#/playground">Try a sketch <ArrowRight size={16} /></a></div><div className="hero-footnote"><span className="tiny-loop" aria-hidden="true">↶</span><span className="micro">INFERENCE · MEMORY · RECURRENCE</span></div></div><HeroCircuit motion={motion} /></section>
+    <section className="section container" aria-labelledby="research-title"><div className="section-heading"><div><div className="eyebrow"><span className="index-label">01</span>Research</div><h2 id="research-title">The work on our desk.</h2></div><a className="text-link" href="#/research">All research <ArrowUpRight size={16} /></a></div><ProjectCards /></section>
+    <section className="playground-invitation container"><div className="invitation-graphic" aria-hidden="true"><span /><span /><span /><span /><i>↶</i></div><div><div className="eyebrow"><span className="index-label">02</span>Playground</div><h2>Pull on a thread.</h2><p>Follow a token. Change a memory budget. Look inside an attention mask.</p></div><a className="button primary" href="#/playground">Open the playground <ArrowUpRight size={17} /></a></section>
+    <section className="section container home-people"><div><div className="eyebrow"><span className="index-label">03</span>Members</div><h2>People behind the work.</h2><a className="text-link" href="#/people">Meet the lab <ArrowRight size={16} /></a></div><div className="people-preview">{PEOPLE.map(person => <a href="#/people" key={person.name}><img src={`${import.meta.env.BASE_URL}${person.photo}`} alt="" width="80" height="80" loading="lazy" /><span><strong>{person.name}</strong><small>{person.role}</small></span><ArrowUpRight size={17} /></a>)}</div></section>
+  </>;
+}
+
+export default function App() {
+  const [route, setRoute] = useState(() => parsePage(window.location.hash));
   const [menuOpen, setMenuOpen] = useState(false);
-  const [copyState, setCopyState] = useState<{ id: string; success: boolean } | null>(null);
-  const copyTimer = useRef<number | undefined>(undefined);
-  const menuToggle = useRef<HTMLButtonElement>(null);
-
-  // Keep direct links and browser history in sync, including the root route.
+  const [motionRequested, setMotionRequested] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const motion = motionRequested && !reducedMotion;
   useEffect(() => {
-    const syncHash = () => {
-      setActiveTab(currentTab());
-      setMenuOpen(false);
-      window.scrollTo({ top: 0, behavior: "auto" });
-    };
-    window.addEventListener("hashchange", syncHash);
-    return () => window.removeEventListener("hashchange", syncHash);
+    const onHash = () => { setRoute(parsePage(window.location.hash)); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "instant" }); };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
-
   useEffect(() => {
-    if (!menuOpen) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        menuToggle.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [menuOpen]);
-
-  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
-
-  // Static content remains usable if an optional API is offline or out of date.
-  useEffect(() => {
-    const apiBase = import.meta.env.VITE_API_URL?.trim();
-    if (!apiBase) return;
-
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 2500);
-
-    Promise.all([
-      fetch(`${apiBase.replace(/\/$/, "")}/api/projects`, { signal: controller.signal }),
-      fetch(`${apiBase.replace(/\/$/, "")}/api/papers`, { signal: controller.signal }),
-    ])
-      .then(async ([projRes, paperRes]) => {
-        const [projData, paperData]: unknown[] = await Promise.all([
-          projRes.ok ? projRes.json() : null,
-          paperRes.ok ? paperRes.json() : null,
-        ]);
-        if (controller.signal.aborted) return;
-        if (isProjectList(projData)) setProjects(projData);
-        if (isPaperList(paperData)) setPapers(paperData);
-      })
-      .catch(() => {
-        // Keep the bundled content on HTTP, network, timeout, or JSON errors.
-      })
-      .finally(() => window.clearTimeout(timer));
-
-    return () => {
-      controller.abort();
-      window.clearTimeout(timer);
-    };
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
-
-  const navigate = (tab: RouteTab) => {
-    setActiveTab(tab);
-    setMenuOpen(false);
-    window.location.hash = `#/${tab}`;
-    window.scrollTo({ top: 0, behavior: "auto" });
-  };
-
-  const copyBibtex = async (id: string, bibtex: string) => {
-    window.clearTimeout(copyTimer.current);
-    try {
-      await navigator.clipboard.writeText(bibtex);
-      setCopyState({ id, success: true });
-      copyTimer.current = window.setTimeout(() => setCopyState(null), 1800);
-    } catch {
-      setCopyState({ id, success: false });
-    }
-  };
-
-  return (
-    <div>
-      <a className="skip-link" href="#main-content" onClick={(event) => {
-        event.preventDefault();
-        document.getElementById("main-content")?.focus();
-      }}>Skip to content</a>
-      {/* Top Institutional Navigation Bar */}
-      <header className="ilrl-header">
-        <div className="ilrl-brand">
-          <a
-            href="#/overview"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("overview");
-            }}
-            style={{
-              color: "var(--color-text)",
-              textDecoration: "none",
-              fontWeight: 700,
-              fontSize: "var(--font-size-mono)",
-              letterSpacing: "-0.32px",
-              minHeight: "44px",
-              display: "inline-flex",
-              alignItems: "center",
-            }}
-          >
-            ILRL LABS
-          </a>
-          <span
-            className="type-dense ilrl-brand-description"
-            style={{
-              color: "var(--color-text-muted-on-light)",
-              borderLeft: "1px solid var(--color-border-hairline-light)",
-              paddingLeft: "var(--space-12)",
-            }}
-          >
-            LLM Inference & ML Systems
-          </span>
-        </div>
-
-        <button ref={menuToggle} type="button" className="button-secondary ilrl-menu-toggle"
-          aria-controls="primary-navigation" aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}>
-          {menuOpen ? "Close menu" : "Menu"}
-        </button>
-        <nav id="primary-navigation" className="ilrl-navigation" aria-label="Primary" data-open={menuOpen}>
-          {TABS.map((tab) => (
-            <a
-              key={tab}
-              href={`#/${tab}`}
-              aria-current={activeTab === tab ? "page" : undefined}
-              onClick={(event) => { event.preventDefault(); navigate(tab); }}
-              className="link-editorial"
-              style={{
-                fontWeight: activeTab === tab ? 700 : 400,
-                textDecorationColor: activeTab === tab ? "var(--color-text)" : "transparent",
-                textTransform: "uppercase",
-              }}
-            >
-              {tab}
-            </a>
-          ))}
-          <a
-            href={LAB_META.frontendRepo}
-            target="_blank"
-            rel="noreferrer"
-            className="button-secondary"
-          >
-            GitHub
-          </a>
-          <a href={`mailto:${LAB_META.contactEmail}`} className="button-primary">
-            Correspondence →
-          </a>
-        </nav>
-      </header>
-
-      <main id="main-content" tabIndex={-1} className="ilrl-container">
-        {/* HERO SECTION */}
-        {activeTab === "overview" && (
-          <section className="ilrl-section">
-            <div className="ilrl-grid-12">
-              <div className="ilrl-col-4">
-                <p className="type-mono" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-12)" }}>
-                  00 / THESIS & TELEMETRY
-                </p>
-                <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-8)" }}>
-                  LOC: {LAB_META.location.toUpperCase()}
-                </p>
-              </div>
-
-              <div className="ilrl-col-8">
-                <h1 className="type-display" style={{ marginBottom: "var(--space-22)" }}>
-                  Exact-budget memory systems and Rényi pruning for long-context inference.
-                </h1>
-                <p className="type-editorial" style={{ marginBottom: "var(--space-58)" }}>
-                  {LAB_META.thesis}
-                </p>
-
-                {/* Quantitative Telemetry Grid */}
-                <div className="ilrl-subgrid-2">
-                  {STATS.map((stat) => (
-                    <div key={stat.label} className="card-editorial-light">
-                      <div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "baseline",
-                            marginBottom: "var(--space-16)",
-                          }}
-                        >
-                          <span className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                            {stat.label.toUpperCase()}
-                          </span>
-                          <span className="type-mono" style={{ fontWeight: 700 }}>
-                            {stat.value}
-                          </span>
-                        </div>
-                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light)" }}>
-                          {stat.detail}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* CORE SYSTEMS RESEARCH */}
-        {(activeTab === "overview" || activeTab === "research") && (
-          <section className="ilrl-section">
-            <div className="ilrl-grid-12">
-              <div className="ilrl-col-4">
-                <p className="type-mono" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-12)" }}>
-                  01 / SYSTEMS & ALGORITHMS
-                </p>
-                <h2 className="type-heading-md" style={{ marginBottom: "var(--space-16)" }}>
-                  Active Inference Engines
-                </h2>
-                <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                  Every algorithm in the lab is benchmarked against physical GPU page constraints, Grouped-Query Attention (GQA) head sharing, and LongBench multi-document tasks.
-                </p>
-              </div>
-
-              <div className="ilrl-col-8" style={{ display: "flex", flexDirection: "column", gap: "var(--space-22)" }}>
-                {projects.map((project) => (
-                  <article id={project.id} key={project.id} className="card-editorial-light">
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: "var(--space-16)",
-                        }}
-                      >
-                        <span className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                          {project.status.toUpperCase()}
-                        </span>
-                        <span className="type-mono">{project.index}</span>
-                      </div>
-
-                      <h3 className="type-heading-sm" style={{ marginBottom: "var(--space-8)" }}>
-                        {project.title}: {project.subtitle}
-                      </h3>
-
-                      <p className="type-editorial" style={{ marginBottom: "var(--space-16)" }}>
-                        {project.summary}
-                      </p>
-
-                      <div
-                        style={{
-                          borderTop: "1px solid var(--color-border-hairline-light)",
-                          paddingTop: "var(--space-16)",
-                          marginBottom: "var(--space-16)",
-                        }}
-                      >
-                        <p className="type-dense" style={{ fontWeight: 700, marginBottom: "var(--space-8)" }}>
-                          SYSTEM BOTTLENECK ADDRESSED
-                        </p>
-                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light)", marginBottom: "var(--space-16)" }}>
-                          {project.problemStatement}
-                        </p>
-
-                        <p className="type-dense" style={{ fontWeight: 700, marginBottom: "var(--space-8)" }}>
-                          KEY TECHNICAL MECHANISMS
-                        </p>
-                        <ul style={{ paddingLeft: "var(--space-16)", display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
-                          {project.contributions.map((item, idx) => (
-                            <li key={idx} className="type-dense" style={{ color: "var(--color-text-secondary-on-light)" }}>
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* Inverse Dark Benchmark Strip */}
-                    <div
-                      className="card-surface-dark"
-                      style={{
-                        padding: "var(--space-22)",
-                        borderRadius: "var(--radius-md)",
-                        marginTop: "var(--space-16)",
-                      }}
-                    >
-                      <div className="benchmark-scroll" role="region" aria-label={`${project.title} benchmarks`} tabIndex={0}>
-                      <table className="benchmark-table">
-                        <thead>
-                          <tr>
-                            <th scope="col">METRIC</th>
-                            <th scope="col">MEASURED VALUE</th>
-                            <th scope="col">EXPERIMENTAL CONDITION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {project.metrics.map((m) => (
-                            <tr key={m.label}>
-                              <td style={{ fontFamily: "var(--font-sans)", fontSize: "var(--font-size-body)" }}>{m.label}</td>
-                              <td style={{ color: "var(--color-on-primary)", fontWeight: 700 }}>{m.value}</td>
-                              <td style={{ fontFamily: "var(--font-sans)", fontSize: "var(--font-size-body)", color: "var(--color-text-muted-on-dark)" }}>
-                                {m.detail}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      </div>
-
-                      <div style={{ display: "flex", gap: "var(--space-12)", marginTop: "var(--space-22)", flexWrap: "wrap" }}>
-                        <a href={project.code} target="_blank" rel="noreferrer" className="button-inverse">
-                          Source Repository ({project.title}) →
-                        </a>
-                        <a
-                          href={project.arxivUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="button-secondary button-on-dark"
-                        >
-                          arXiv:{project.arxivId}
-                        </a>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* OPEN PROBLEMS & CURRENT RESEARCH DIRECTIONS */}
-        {(activeTab === "overview" || activeTab === "research") && (
-          <section className="ilrl-section">
-            <div className="ilrl-grid-12">
-              <div className="ilrl-col-4">
-                <p className="type-mono" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-12)" }}>
-                  02 / OPEN PROBLEMS
-                </p>
-                <h2 className="type-heading-md" style={{ marginBottom: "var(--space-16)" }}>
-                  Current Research Directions
-                </h2>
-                <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                  Ongoing theoretical derivations and kernel implementations under active investigation across reinforcement learning and hardware-aligned serving.
-                </p>
-              </div>
-
-              <div className="ilrl-col-8">
-                <div className="ilrl-subgrid-2">
-                  {RESEARCH_DIRECTIONS.map((dir) => (
-                    <div key={dir.id} className="card-editorial-light">
-                      <div>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--space-16)" }}>
-                          <span className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                            {dir.domain.toUpperCase()}
-                          </span>
-                          <span className="type-mono">{dir.index}</span>
-                        </div>
-                        <h3 className="type-heading-sm" style={{ marginBottom: "var(--space-12)" }}>
-                          {dir.title}
-                        </h3>
-                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light)", marginBottom: "var(--space-16)" }}>
-                          {dir.hypothesis}
-                        </p>
-                        <ul style={{ paddingLeft: "var(--space-16)", display: "flex", flexDirection: "column", gap: "var(--space-8)" }}>
-                          {dir.mechanisms.map((mech, i) => (
-                            <li key={i} className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                              {mech}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* PUBLICATIONS & BIBTEX MONOGRAPHS */}
-        {(activeTab === "overview" || activeTab === "publications") && (
-          <section className="ilrl-section">
-            <div className="ilrl-grid-12">
-              <div className="ilrl-col-4">
-                <p className="type-mono" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-12)" }}>
-                  03 / PUBLICATIONS
-                </p>
-                <h2 className="type-heading-md" style={{ marginBottom: "var(--space-16)" }}>
-                  Manuscripts & Preprints
-                </h2>
-                <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                  Direct links to arXiv manuscripts, open-source reproduction scripts, and BibTeX records.
-                </p>
-              </div>
-
-              <div className="ilrl-col-8" style={{ display: "flex", flexDirection: "column", gap: "var(--space-22)" }}>
-                {papers.map((paper, idx) => (
-                  <article key={paper.id} className="card-editorial-light">
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--space-16)" }}>
-                        <span className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-                          {paper.venue.toUpperCase()} · {paper.date.toUpperCase()}
-                        </span>
-                        <span className="type-mono">P0{idx + 1} · arXiv:{paper.arxivId}</span>
-                      </div>
-
-                      <h3 className="type-heading-sm" style={{ marginBottom: "var(--space-8)" }}>
-                        {paper.title}
-                      </h3>
-                      <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-16)" }}>
-                        Authors: {paper.authors.join(", ")}
-                      </p>
-                      <p className="type-editorial" style={{ marginBottom: "var(--space-22)" }}>
-                        {paper.abstract}
-                      </p>
-
-                      <pre
-                        className="type-mono"
-                        style={{
-                          backgroundColor: "var(--color-surface)",
-                          color: "var(--color-text-muted)",
-                          padding: "var(--space-16)",
-                          borderRadius: "var(--radius-sm)",
-                          overflowX: "auto",
-                          fontSize: "12px",
-                          marginBottom: "var(--space-22)",
-                        }}
-                      >
-                        <code>{paper.bibtex}</code>
-                      </pre>
-                    </div>
-
-                    <div style={{ display: "flex", gap: "var(--space-12)", flexWrap: "wrap" }}>
-                      <a href={paper.pdfUrl} target="_blank" rel="noreferrer" className="button-primary">
-                        Read Manuscript (PDF) →
-                      </a>
-                      <a href={paper.codeUrl} target="_blank" rel="noreferrer" className="button-secondary">
-                        Benchmark Code
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => copyBibtex(paper.id, paper.bibtex)}
-                        className="button-secondary"
-                      >
-                        {copyState?.id === paper.id && copyState.success ? "Copied BibTeX" : "Copy BibTeX"}
-                      </button>
-                    </div>
-                    <p role="status" className="type-dense">
-                      {copyState?.id === paper.id && (copyState.success
-                        ? "BibTeX copied."
-                        : "Copy unavailable. Select and copy the citation above.")}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* PEOPLE & LAB LOG */}
-        {(activeTab === "overview" || activeTab === "people") && (
-          <section className="ilrl-section">
-            <div className="ilrl-grid-12">
-              <div className="ilrl-col-4">
-                <p className="type-mono" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-12)" }}>
-                  04 / PEOPLE & CHANGELOG
-                </p>
-                <h2 className="type-heading-md" style={{ marginBottom: "var(--space-16)" }}>
-                  Researchers & Lab Log
-                </h2>
-              </div>
-
-              <div className="ilrl-col-8">
-                <div className="ilrl-subgrid-2" style={{ marginBottom: "var(--space-58)" }}>
-                  {PEOPLE.map((person) => (
-                    <div key={person.id} className="card-editorial-light">
-                      <div>
-                        <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-8)" }}>
-                          {person.role.toUpperCase()}
-                        </p>
-                        <h3 className="type-heading-sm" style={{ marginBottom: "var(--space-8)" }}>
-                          {person.name}
-                        </h3>
-                        <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)", marginBottom: "var(--space-16)" }}>
-                          {person.affiliation}
-                        </p>
-                        <p className="type-dense" style={{ color: "var(--color-text-secondary-on-light)", marginBottom: "var(--space-22)" }}>
-                          {person.focus}
-                        </p>
-                      </div>
-                      <div style={{ display: "flex", gap: "var(--space-16)" }}>
-                        {person.github && (
-                          <a href={person.github} target="_blank" rel="noreferrer" className="link-editorial">
-                            GitHub →
-                          </a>
-                        )}
-                        {person.email && (
-                          <a href={`mailto:${person.email}`} className="link-editorial">
-                            Email →
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Chronological Lab Dispatches */}
-                <div className="card-editorial-light">
-                  <p className="type-dense" style={{ fontWeight: 700, marginBottom: "var(--space-16)" }}>
-                    RECENT LAB DISPATCHES
-                  </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-16)" }}>
-                    {NEWS.map((item, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "baseline",
-                          gap: "var(--space-16)",
-                          borderBottom: i < NEWS.length - 1 ? "1px solid var(--color-border-hairline-light)" : "none",
-                          paddingBottom: i < NEWS.length - 1 ? "var(--space-16)" : "0",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <div className="ilrl-news-copy">
-                          <span className="type-mono" style={{ fontSize: "12px", color: "var(--color-text-muted-on-light)" }}>
-                            {item.date}
-                          </span>
-                          <span className="type-dense" style={{ fontWeight: 700 }}>
-                            [{item.tag}]
-                          </span>
-                          <span className="type-dense" style={{ color: "var(--color-text-secondary-on-light)" }}>
-                            {item.text}
-                          </span>
-                        </div>
-                        {item.link && (
-                          <a href={item.link} target="_blank" rel="noreferrer" className="link-editorial">
-                            Inspect →
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {/* Institutional Footer */}
-      <footer className="ilrl-container" style={{ paddingBlock: "var(--space-58)" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "var(--space-22)",
-          }}
-        >
-          <div>
-            <p className="type-mono" style={{ fontWeight: 700, marginBottom: "var(--space-4)" }}>
-              {LAB_META.name} — {LAB_META.fullName}
-            </p>
-            <p className="type-dense" style={{ color: "var(--color-text-muted-on-light)" }}>
-              Contact: {LAB_META.contactEmail}
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: "var(--space-22)", flexWrap: "wrap" }}>
-            <a href={LAB_META.liveSite} target="_blank" rel="noreferrer" className="link-editorial">
-              Live Site
-            </a>
-            <a href={LAB_META.frontendRepo} target="_blank" rel="noreferrer" className="link-editorial">
-              Frontend Repo (ILRL-Labs)
-            </a>
-            <a href={LAB_META.backendRepo} target="_blank" rel="noreferrer" className="link-editorial">
-              Backend API (ILRL-Backend)
-            </a>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  useEffect(() => { document.title = route.page === "overview" ? `ILRL — ${LAB_META.fullName}` : `${NAV.find(item => item.page === route.page)?.label ?? "ILRL"} · ILRL`; }, [route.page]);
+  return <div className="site-shell" data-motion={motion}>
+    <a className="skip-link" href="#main-content" onClick={event => { event.preventDefault(); document.getElementById("main-content")?.focus(); }}>Skip to content</a>
+    <header className="site-header"><div className="header-inner container"><a href="#/" className="brand" aria-label="ILRL home"><LoopMark /><span>ILRL</span></a><nav className={menuOpen ? "main-nav is-open" : "main-nav"} id="main-navigation" aria-label="Main navigation">{NAV.map(item => <a key={item.page} href={`#/${item.page}`} aria-current={route.page === item.page ? "page" : undefined}>{item.label}</a>)}</nav><div className="header-controls"><button className="motion-toggle icon-button" type="button" aria-label={reducedMotion ? "Motion reduced by your system setting" : motion ? "Pause motion" : "Enable motion"} title={reducedMotion ? "Following your reduced-motion setting" : motion ? "Pause motion" : "Enable motion"} disabled={reducedMotion} onClick={() => setMotionRequested(value => !value)}>{motion ? <Pause size={15} /> : <Play size={15} />}</button><a className="contact-link" href={`mailto:${LAB_META.email}`}>Say hello <ArrowUpRight size={15} /></a><button className="mobile-menu icon-button" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={() => setMenuOpen(value => !value)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div></div></header>
+    <main id="main-content" tabIndex={-1}>
+      {route.page === "overview" && <Home motion={motion} />}
+      {route.page === "research" && <div className="container page-content"><PageIntro index="01" label="Research" title="Less memory. Less waiting.">Our current work is on KV-cache selection and the cost of processing long prompts.</PageIntro><ProjectCards expanded /><div className="research-afterword"><LoopMark /><p>Recurrence is another question we are working toward: what changes when a model reuses its layers?</p><a className="text-link" href="#/publications">Read our notes <ArrowRight size={16} /></a></div></div>}
+      {route.page === "playground" && <div className="container page-content"><PageIntro index="02" label="Playground" title="A few things to try.">Small, interactive sketches of the systems we think about. Choose one and change something.</PageIntro><Playground motion={motion} initialTool={route.tool} /><div className="playground-bottom"><span className="micro">MADE TO BE EXAMINED</span><p>These are explanations of ideas, not research results.</p><a className="text-link" href="#/research">Back to the work <ArrowRight size={16} /></a></div></div>}
+      {route.page === "people" && <div className="container page-content"><PageIntro index="03" label="Members" title="The people in the loop.">A small lab working on inference, memory, and recurrence.</PageIntro><Members /><div className="member-contact"><Mail size={22} strokeWidth={1.5} /><div><h3>Have a question about the work?</h3><a href={`mailto:${LAB_META.email}`}>{LAB_META.email} <ArrowUpRight size={15} /></a></div></div></div>}
+      {route.page === "publications" && <div className="container page-content notes-page"><PageIntro index="04" label="Notes" title="Questions, written down.">A few short notes on why we are working on these problems.</PageIntro><div className="notes-list">{NOTES.map((note, i) => <details className="note" key={note.title} open={i === 0}><summary><span className="micro">0{i + 1} / {note.topic}</span><h2>{note.title}</h2><span className="note-toggle"><Plus size={20} /></span></summary><div className="note-body"><p>{note.text}</p><a className="text-link" href={`#/playground/${i === 0 ? "cache" : "loop"}`}>Explore the idea <ArrowRight size={16} /></a></div></details>)}</div><a className="notes-email text-link" href={`mailto:${LAB_META.email}`}>Something we should think about? Write to us <ArrowUpRight size={16} /></a></div>}
+    </main>
+    <footer className="site-footer"><div className="container footer-main"><div><a className="brand" href="#/" aria-label="ILRL home"><LoopMark /><span>ILRL</span></a><p>{LAB_META.fullName}</p></div><a className="footer-email" href={`mailto:${LAB_META.email}`}>Let’s talk about the work.<ArrowUpRight size={24} strokeWidth={1.5} /><span>{LAB_META.email}</span></a></div><div className="container footer-bottom"><span>ILRL Labs</span><span>Inference. Memory. Recurrence.</span><a href="#/people">Members <ArrowUpRight size={13} /></a></div></footer>
+  </div>;
 }
-
-export default App;
