@@ -78,8 +78,7 @@ export default function App() {
     <main id="main-content" tabIndex={-1}>
       <section id="about" className="about-section container" aria-labelledby="about-title">
         <div className="about-copy">
-          <p className="lab-fullname">{LAB.fullName}</p>
-          <h1 id="about-title">LLM inference<br /><span>&amp; ML systems.</span></h1>
+          <h1 id="about-title">{LAB.fullName}</h1>
         </div>
         <div className="about-details">
           <p className="about-description">{LAB.about}</p>
