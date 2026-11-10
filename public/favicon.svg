@@ -1,5 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#faf9f5"/>
-  <path d="M32 32C21 10 7 17 7 32s14 22 25 0S57 10 57 32 43 54 32 32Z" fill="none" stroke="#24251f" stroke-width="4"/>
-  <path d="m47 17 6 3-4 5" fill="none" stroke="#796997" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-56 -32 112 64">
+  <rect x="-56" y="-32" width="112" height="64" rx="12" fill="#101211" />
+  <path
+    d="M 44.00 0.00 L 42.90 6.72 L 39.84 12.66 L 35.33 17.16 L 29.99 19.83 L 24.39 20.53 L 18.92 19.35 L 13.79 16.58 L 9.03 12.58 L 4.53 7.72 L 0.00 2.33 L -4.53 -3.27 L -9.03 -8.78 L -13.79 -13.86 L -18.92 -18.14 L -24.39 -21.22 L -29.99 -22.68 L -35.33 -22.14 L -39.84 -19.38 L -42.90 -14.53 L -44.00 -7.65 L -42.90 0.00 L -39.84 7.65 L -35.33 14.53 L -29.99 19.38 L -24.39 22.14 L -18.92 22.68 L -13.79 21.22 L -9.03 18.14 L -4.53 13.86 L 0.00 8.78 L 4.53 3.27 L 9.03 -2.33 L 13.79 -7.72 L 18.92 -12.58 L 24.39 -16.58 L 29.99 -19.35 L 35.33 -20.53 L 39.84 -19.83 L 42.90 -17.16 L 44.00 -12.66 Z"
+    fill="none"
+    stroke="#f0f3ef"
+    stroke-width="7.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <line
+    x1="35.2"
+    y1="-13.6"
+    x2="23.4"
+    y2="-2.2"
+    stroke="#f0f3ef"
+    stroke-width="7.2"
+    stroke-linecap="round"
+  />
 </svg>
