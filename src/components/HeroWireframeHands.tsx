@@ -40,11 +40,11 @@ export function HeroWireframeHands({ motionEnabled }: HeroWireframeHandsProps) {
           initial={
             motionEnabled
               ? { x: 185, y: -145, opacity: 0 }
-              : { x: -7, y: 5, opacity: 0.44 }
+              : { x: -7, y: 5, opacity: 0.42 }
           }
           animate={
             shouldConnect
-              ? { x: -7, y: 5, opacity: 0.44 }
+              ? { x: -7, y: 5, opacity: 0.42 }
               : { x: 185, y: -145, opacity: 0 }
           }
           transition={
@@ -62,11 +62,11 @@ export function HeroWireframeHands({ motionEnabled }: HeroWireframeHandsProps) {
           initial={
             motionEnabled
               ? { x: -185, y: 145, opacity: 0 }
-              : { x: 7, y: -5, opacity: 0.44 }
+              : { x: 7, y: -5, opacity: 0.42 }
           }
           animate={
             shouldConnect
-              ? { x: 7, y: -5, opacity: 0.44 }
+              ? { x: 7, y: -5, opacity: 0.42 }
               : { x: -185, y: 145, opacity: 0 }
           }
           transition={
