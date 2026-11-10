@@ -2,8 +2,6 @@
 
 :root {
   color-scheme: dark;
-
-  /* Isoquant Design System Tokens (from DESIGN_78e2d84a.md) */
   --canvas: #101211;
   --text: #e7ece8;
   --text-strong: #f0f3ef;
@@ -321,9 +319,7 @@ a.control-button:hover {
   display: none;
 }
 
-/* ══════════════════════════════════════════════════════════════════════
- * HERO / ABOUT SECTION — Left Copy + Seamlessly Merged Unboxed Cybernetic Touch
- * ══════════════════════════════════════════════════════════════════════ */
+/* Hero / About Section */
 .about-section {
   min-height: calc(100svh - var(--header-height));
   padding-block: 28px 40px;
@@ -868,9 +864,7 @@ a.control-button:hover {
   letter-spacing: 0.05em;
 }
 
-/* ══════════════════════════════════════════════════════════════════════
- * 03 / FUTURE GOALS — With Unboxed White Wireframe Hands Convergence Background
- * ══════════════════════════════════════════════════════════════════════ */
+/* 03 / Future Goals */
 .goals-section {
   position: relative;
   overflow: hidden;
@@ -1134,10 +1128,7 @@ a.control-button:hover {
   color: var(--button-text);
 }
 
-/* ══════════════════════════════════════════════════════════════════════
- * SEAMLESS BOTTOM DEEPINFERENCE-STYLE ILRL LABS MICRO-DOT IDENTITY
- * Aligned with the container grid and merged directly into #101211
- * ══════════════════════════════════════════════════════════════════════ */
+/* Bottom Micro-Dot Infinity Stage */
 .bottom-deepinference-identity {
   width: 100%;
   margin-top: 20px;
@@ -1259,11 +1250,6 @@ a.control-button:hover {
   #ilrl-logo-stage,
   .ilrl-logo-stage {
     height: 170px;
-  }
-  .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
   }
 }
 
