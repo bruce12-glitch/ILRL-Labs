@@ -239,8 +239,8 @@ export function CyberneticTouch({
   };
 
   const offsets = getHandOffsets(connected, EDGE_START_OFFSET);
-  const cyberHandUrl = `${import.meta.env.BASE_URL}assets/aistudio/cyber_hand_upper.png`;
-  const humanHandUrl = `${import.meta.env.BASE_URL}assets/aistudio/human_hand_lower.png`;
+  const cyberHandUrl = `${import.meta.env.BASE_URL}assets/hands/cyber-hand-upper.png`;
+  const humanHandUrl = `${import.meta.env.BASE_URL}assets/hands/human-hand-lower.png`;
 
   return (
     <div
