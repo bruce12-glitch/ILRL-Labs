@@ -30,11 +30,6 @@ const LABELS: Record<Section, string> = {
   "future-goals": "Future Goals",
 };
 
-/**
- * Official ILRL Labs Infinity Logo Mark (matching image_ff8a7bc1.png):
- * Balanced parametric Lemniscate of Bernoulli with the signature inward
- * diagonal tick stroke inside the upper-right loop.
- */
 function Mark() {
   const pathData = useMemo(() => {
     const a = 44;
