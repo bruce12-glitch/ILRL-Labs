@@ -5,22 +5,12 @@ interface HeroWireframeHandsProps {
   motionEnabled: boolean;
 }
 
-/**
- * Unboxed, seamlessly blended monochrome wireframe hands convergence
- * using two completely separate, pre-isolated hand images:
- * - /assets/aistudio/wf_hand_upper.png (Upper-Right Hand)
- * - /assets/aistudio/wf_hand_lower.png (Lower-Left Hand)
- *
- * Serves as the dimmed, realistic background for the Future Goals (#future-goals)
- * section. Each hand translates as an intact, independent hand from the outer
- * edges until the fingertips meet at the center.
- */
 export function HeroWireframeHands({ motionEnabled }: HeroWireframeHandsProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(stageRef, { amount: 0.22, once: false });
 
-  const upperUrl = `${import.meta.env.BASE_URL}assets/aistudio/wf_hand_upper.png`;
-  const lowerUrl = `${import.meta.env.BASE_URL}assets/aistudio/wf_hand_lower.png`;
+  const upperUrl = `${import.meta.env.BASE_URL}assets/hands/wireframe-hand-upper.png`;
+  const lowerUrl = `${import.meta.env.BASE_URL}assets/hands/wireframe-hand-lower.png`;
 
   const shouldConnect = !motionEnabled || isInView;
 
