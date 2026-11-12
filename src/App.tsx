@@ -9,15 +9,7 @@ import {
   Play,
   X,
 } from "lucide-react";
-import {
-  GOALS,
-  HERO_PILLARS,
-  INTERESTS,
-  LAB,
-  PAPERS,
-  PEOPLE,
-  RESEARCH_METHODOLOGY,
-} from "./data/lab";
+import { GOALS, INTERESTS, LAB, PAPERS, PEOPLE } from "./data/lab";
 import {
   activeSection,
   resolveSection,
@@ -47,7 +39,9 @@ function Mark() {
     for (let i = 0; i <= steps; i++) {
       const t = (i / steps) * Math.PI * 2;
       const { x, y } = sampleLemniscatePoint(t, a, yScale);
-      pts.push(`${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`);
+      pts.push(
+        `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`
+      );
     }
     pts.push("Z");
     return pts.join(" ");
@@ -255,106 +249,40 @@ export default function App() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        {/* 00 / Overview (Hero): Full-Viewport Split Stage + Bottom Architectural Research Ledger */}
+        {/* 00 / Overview (Hero): Copy Left + Cybernetic & Human Hands moving from screen edges to touch on open */}
         <section
           id="about"
           className="about-section snap-section container"
           aria-labelledby="about-title"
         >
-          <div className="hero-main-grid">
-            <motion.div
-              className="about-copy"
-              initial={motionEnabled ? { opacity: 0, y: 18 } : false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="hero-kicker-row">
-                <span className="hero-kicker">00 / Overview · {LAB.name}</span>
-                <span className="hero-kicker-divider" aria-hidden="true">
-                  ·
-                </span>
-                <span className="hero-kicker-sub">
-                  LLM Inference · Memory Systems · Algorithms
-                </span>
-              </div>
-
-              <h1 id="about-title">{LAB.fullName}</h1>
-
-              <div className="about-details">
-                <p className="about-description">{LAB.about}</p>
-                <p className="about-thesis">{LAB.thesis}</p>
-                <p className="about-interests">{LAB.agenda}</p>
-
-                <div className="about-links">
-                  <a
-                    className="inline-link inline-link-primary"
-                    href="#research"
-                  >
-                    Research papers <ArrowDown size={14} />
-                  </a>
-                  <a className="inline-link" href="#interests">
-                    Our interests <ArrowUpRight size={14} />
-                  </a>
-                  <a className="inline-link" href="#future-goals">
-                    Future goals <ArrowDown size={14} />
-                  </a>
-                  <a className="inline-link" href="#members">
-                    Members <ArrowDown size={14} />
-                  </a>
-                </div>
-
-                <div
-                  className="hero-preprint-strip"
-                  aria-label="Current preprints"
-                >
-                  {PAPERS.map((paper) => (
-                    <a
-                      key={paper.id}
-                      href={paper.arxiv}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hero-preprint-item"
-                    >
-                      <div className="hero-preprint-top">
-                        <span className="hero-preprint-id">
-                          {paper.arxivId} · {paper.date}
-                        </span>
-                        <ArrowUpRight size={13} />
-                      </div>
-                      <p className="hero-preprint-title">
-                        <strong>{paper.name}</strong> — {paper.title}
-                      </p>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="hero-visual-merged">
-              <CyberneticTouch motionEnabled={motionEnabled} variant="hero" />
-            </div>
-          </div>
-
-          <div
-            className="hero-pillars-ledger"
-            aria-label="Core research pillars"
+          <motion.div
+            className="about-copy"
+            initial={motionEnabled ? { opacity: 0, y: 18 } : false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           >
-            {HERO_PILLARS.map((pillar) => (
-              <a
-                key={pillar.index}
-                href={pillar.href}
-                className="hero-pillar-cell"
-              >
-                <div className="hero-pillar-header">
-                  <span className="hero-pillar-index">
-                    {pillar.index} / {pillar.domain}
-                  </span>
-                  <span className="hero-pillar-meta">{pillar.meta}</span>
-                </div>
-                <h2 className="hero-pillar-title">{pillar.title}</h2>
-                <p className="hero-pillar-desc">{pillar.description}</p>
-              </a>
-            ))}
+            <span className="hero-kicker">00 / Overview · {LAB.name}</span>
+            <h1 id="about-title">{LAB.fullName}</h1>
+            <div className="about-details">
+              <p className="about-description">{LAB.about}</p>
+              <p className="about-interests">
+                Our interests include holographic model compression, looped
+                transformers, the future of inference in AGI, and unexplored
+                conflicts in AGI.
+              </p>
+              <div className="about-links">
+                <a className="inline-link inline-link-primary" href="#research">
+                  Research papers <ArrowDown size={14} />
+                </a>
+                <a className="inline-link" href="#interests">
+                  Our interests <ArrowUpRight size={14} />
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="hero-visual-merged">
+            <CyberneticTouch motionEnabled={motionEnabled} variant="hero" />
           </div>
         </section>
 
@@ -368,7 +296,7 @@ export default function App() {
             id="research-title"
             number="01"
             title="Research"
-            note="Current papers on context pruning, KV-cache memory management, and conditional output stability."
+            note="Current papers on inference and memory."
           />
           <div className="paper-list">
             {PAPERS.map((paper, idx) => (
@@ -387,9 +315,7 @@ export default function App() {
               >
                 <div>
                   <div className="paper-meta">
-                    <span>
-                      Preprint · {paper.date} · {paper.arxivId}
-                    </span>
+                    <span>Preprint · {paper.date}</span>
                     <span>{paper.topic}</span>
                   </div>
                   <h3>
@@ -398,26 +324,8 @@ export default function App() {
                       <ArrowUpRight size={17} />
                     </a>
                   </h3>
-                  <p className="paper-author">{paper.author} · ILRL Labs</p>
+                  <p className="paper-author">{paper.author}</p>
                   <p className="paper-summary">{paper.summary}</p>
-                  <p className="paper-detail">{paper.detail}</p>
-
-                  <div className="paper-contributions">
-                    <span className="paper-contributions-heading">
-                      Technical Scope & Contributions
-                    </span>
-                    <dl className="paper-contribution-list">
-                      {paper.contributions.map((item) => (
-                        <div
-                          key={item.label}
-                          className="paper-contribution-row"
-                        >
-                          <dt>{item.label}</dt>
-                          <dd>{item.text}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
                 </div>
                 <div
                   className="paper-links"
@@ -444,20 +352,6 @@ export default function App() {
               </motion.article>
             ))}
           </div>
-
-          <div
-            className="methodology-ledger"
-            aria-label="Research methodology"
-          >
-            {RESEARCH_METHODOLOGY.map((item) => (
-              <div key={item.index} className="methodology-cell">
-                <span className="methodology-index">
-                  {item.index} · {item.title}
-                </span>
-                <p>{item.text}</p>
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* 02 / Interests */}
@@ -470,7 +364,7 @@ export default function App() {
             id="interests-title"
             number="02"
             title="Interests"
-            note="Core questions and technical directions we investigate across inference, compression, and AGI systems."
+            note="Directions we want to explore."
           />
           <div className="interest-list">
             {INTERESTS.map((interest, i) => (
@@ -489,10 +383,9 @@ export default function App() {
                 <span className="interest-symbol" aria-hidden="true">
                   0{i + 1}
                 </span>
-                <div className="interest-body">
+                <div>
                   <h3>{interest.title}</h3>
                   <p>{interest.description}</p>
-                  <p className="interest-question">{interest.question}</p>
                   <span className="interest-keywords">{interest.keywords}</span>
                 </div>
               </motion.article>
@@ -512,7 +405,7 @@ export default function App() {
               id="goals-title"
               number="03"
               title="Future Goals"
-              note="How we plan to scale our evaluations, unify compression with recurrence, and maintain open reproducibility."
+              note="What we want to do next."
             />
             <ol className="goal-list">
               {GOALS.map((goal, idx) => (
@@ -527,16 +420,8 @@ export default function App() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <div className="goal-top">
-                    <h3>{goal.title}</h3>
-                    <p className="goal-lead">{goal.text}</p>
-                    <p className="goal-detail">{goal.detail}</p>
-                  </div>
-                  <ul className="goal-milestones">
-                    {goal.milestones.map((ms) => (
-                      <li key={ms}>{ms}</li>
-                    ))}
-                  </ul>
+                  <h3>{goal.title}</h3>
+                  <p>{goal.text}</p>
                 </motion.li>
               ))}
             </ol>
@@ -554,7 +439,7 @@ export default function App() {
               id="members-title"
               number="04"
               title="Members"
-              note="The people working on LLM inference, mathematical foundations, and ML systems at ILRL."
+              note="The people working on these questions."
             />
             <div className="member-list">
               {PEOPLE.map((person, idx) => (
@@ -574,7 +459,7 @@ export default function App() {
                     className="portrait"
                     src={`${import.meta.env.BASE_URL}${person.photo}`}
                     width="136"
-                    height="172"
+                    height="164"
                     alt={person.name}
                     loading="lazy"
                   />
@@ -592,12 +477,6 @@ export default function App() {
                       </a>
                     )}
                     <p className="member-focus">{person.focus}</p>
-                    <p className="member-bio">{person.bio}</p>
-                    <ul className="member-areas" aria-label="Research areas">
-                      {person.areas.map((area) => (
-                        <li key={area}>{area}</li>
-                      ))}
-                    </ul>
                     <div className="member-links">
                       {person.links.map((link) => (
                         <a
@@ -614,36 +493,6 @@ export default function App() {
                   </div>
                 </motion.article>
               ))}
-            </div>
-
-            <div className="correspondence-bar">
-              <div className="correspondence-copy">
-                <span className="correspondence-label">
-                  05 / Correspondence & Open Repositories
-                </span>
-                <p>
-                  For technical discussions on EntroPrefill, Page-EntroKV,
-                  looped transformers, or research collaboration inquiries,
-                  reach out directly via email or inspect our open-source
-                  codebases.
-                </p>
-              </div>
-              <div className="correspondence-actions">
-                <a
-                  className="inline-link inline-link-primary"
-                  href={`mailto:${LAB.email}`}
-                >
-                  {LAB.email} <ArrowUpRight size={14} />
-                </a>
-                <a
-                  className="inline-link"
-                  href="https://github.com/bruce12-glitch"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GitHub Repositories <ArrowUpRight size={14} />
-                </a>
-              </div>
             </div>
           </div>
 
