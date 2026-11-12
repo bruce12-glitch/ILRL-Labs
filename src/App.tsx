@@ -252,7 +252,7 @@ export default function App() {
         {/* 00 / Overview (Hero): Copy Left + Cybernetic & Human Hands moving from screen edges to touch on open */}
         <section
           id="about"
-          className="about-section snap-section container"
+          className="about-section container"
           aria-labelledby="about-title"
         >
           <motion.div
@@ -289,7 +289,7 @@ export default function App() {
         {/* 01 / Research */}
         <section
           id="research"
-          className="content-section snap-section container"
+          className="content-section container"
           aria-labelledby="research-title"
         >
           <SectionTitle
@@ -357,7 +357,7 @@ export default function App() {
         {/* 02 / Interests */}
         <section
           id="interests"
-          className="content-section snap-section container"
+          className="content-section container"
           aria-labelledby="interests-title"
         >
           <SectionTitle
@@ -396,7 +396,7 @@ export default function App() {
         {/* 03 / Future Goals — Dimmed, realistic White Wireframe Hands convergence background */}
         <section
           id="future-goals"
-          className="content-section goals-section snap-section"
+          className="content-section goals-section"
           aria-labelledby="goals-title"
         >
           <HeroWireframeHands motionEnabled={motionEnabled} />
@@ -431,7 +431,7 @@ export default function App() {
         {/* 04 / Members + Seamlessly Aligned Bottom ILRL LABS Micro-Dot Identity */}
         <section
           id="members"
-          className="content-section members-section snap-section container"
+          className="content-section members-section container"
           aria-labelledby="members-title"
         >
           <div className="members-top-content">

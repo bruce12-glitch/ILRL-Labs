@@ -251,25 +251,30 @@ export function MicroDotInfinityStage({
     const host = mountRef.current;
     if (!host) return;
 
-    const isSoftwareGl = (() => {
-      const gl = document.createElement("canvas").getContext("webgl2");
-      if (!gl) return true;
-      const ext = gl.getExtension("WEBGL_debug_renderer_info");
-      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
-      const gpu = String(gl.getParameter(param));
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-      return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
-    })();
+    const gl = document.createElement("canvas").getContext("webgl2");
+    if (!gl) return;
+    const ext = gl.getExtension("WEBGL_debug_renderer_info");
+    const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
+    const gpu = String(gl.getParameter(param));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    const isSoftwareGl = /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: !isSoftwareGl,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      // Keep the static mark when WebGL initialization fails.
+      return;
+    }
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-10, 10, 5, -5, 0.1, 100);
     camera.position.set(0, 0, 10);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: !isSoftwareGl,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setClearColor(0x101211, 0.0);
     const pr = isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2);
@@ -420,9 +425,17 @@ export function MicroDotInfinityStage({
       className="ilrl-logo-stage"
       data-testid="ilrl-logo-stage"
       role="img"
-      aria-label="ILRL LABS Micro-Dot Infinity Identity with spectral inference wave"
+      aria-label="ILRL Labs"
     >
       <div ref={mountRef} className="ilrl-logo-canvas-host" />
+      <img
+        className="ilrl-logo-fallback"
+        src={`${import.meta.env.BASE_URL}favicon.svg`}
+        width="80"
+        height="46"
+        alt=""
+        loading="lazy"
+      />
     </div>
   );
 }
